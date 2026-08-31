@@ -73,7 +73,9 @@ export async function POST(request: NextRequest) {
 
       // Asignar rol por defecto
       let defaultRoleName = 'profesor';
-      if (cleanEmail.includes('tutor')) {
+      if (cleanEmail === 'apps@utzmg.edu.mx' || cleanEmail.includes('admin')) {
+        defaultRoleName = 'admin';
+      } else if (cleanEmail.includes('tutor')) {
         defaultRoleName = 'tutor';
       } else if (cleanEmail.includes('coordinad') || cleanEmail.includes('proyecto')) {
         defaultRoleName = 'coordinador_proyectos';
@@ -81,8 +83,6 @@ export async function POST(request: NextRequest) {
         defaultRoleName = 'asistente';
       } else if (cleanEmail.includes('direccion') || cleanEmail.includes('academica') || cleanEmail.includes('da@')) {
         defaultRoleName = 'direccion_academica';
-      } else if (cleanEmail.includes('admin')) {
-        defaultRoleName = 'admin';
       }
 
       const defaultRole = await prisma.role.findUnique({

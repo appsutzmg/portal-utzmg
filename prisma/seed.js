@@ -94,37 +94,12 @@ async function main() {
   }
   console.log('✅ Las 2 aplicaciones institucionales registradas con sus roles autorizados');
 
-  // 3. Usuarios de Demostración para Pruebas de Roles (@utzmg.edu.mx)
+  // 3. Usuario Administrador Institucional Inicial (@utzmg.edu.mx)
   const usersData = [
     {
-      email: 'admin@utzmg.edu.mx',
+      email: 'apps@utzmg.edu.mx',
       name: 'Administrador Institucional UTZMG',
       roles: ['admin'],
-    },
-    {
-      email: 'profesor@utzmg.edu.mx',
-      name: 'Profesor / Docente',
-      roles: ['profesor'],
-    },
-    {
-      email: 'coordinador.proyectos@utzmg.edu.mx',
-      name: 'Coordinador de Proyectos',
-      roles: ['coordinador_proyectos'],
-    },
-    {
-      email: 'asistente.proyectos@utzmg.edu.mx',
-      name: 'Asistente de Proyectos',
-      roles: ['asistente'],
-    },
-    {
-      email: 'tutor@utzmg.edu.mx',
-      name: 'Tutor Institucional',
-      roles: ['tutor'],
-    },
-    {
-      email: 'direccion.academica@utzmg.edu.mx',
-      name: 'Dirección Académica',
-      roles: ['direccion_academica'],
     },
   ];
 
@@ -145,7 +120,7 @@ async function main() {
       }
     }
   }
-  console.log('✅ Usuarios de prueba creados para cada rol');
+  console.log('✅ Usuario Administrador (apps@utzmg.edu.mx) configurado con rol admin');
 
   // 4. Bitácora de Auditoría
   await prisma.auditLog.create({

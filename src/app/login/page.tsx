@@ -101,9 +101,12 @@ export default function LoginPage() {
           {/* Google Workspace Button */}
           <button
             onClick={() => {
-              // Pre-fill or launch login
-              if (!email) setEmail('admin@utzmg.edu.mx');
-              login(email || 'admin@utzmg.edu.mx');
+              if (!email) {
+                setEmail('apps@utzmg.edu.mx');
+                login('apps@utzmg.edu.mx');
+              } else {
+                login(email);
+              }
             }}
             disabled={isSubmitting}
             className="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all mb-6 group"

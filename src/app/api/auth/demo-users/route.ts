@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    if (process.env.ENABLE_DEMO_ACCOUNTS !== 'true' && process.env.NODE_ENV === 'production') {
-      return NextResponse.json({ ok: false, users: [] }, { status: 403 });
+    if (process.env.ENABLE_DEMO_ACCOUNTS !== 'true') {
+      return NextResponse.json({ ok: true, users: [] });
     }
 
     const users = await prisma.user.findMany({
