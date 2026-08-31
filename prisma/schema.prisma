@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(cuid())
+  email       String     @unique
+  name        String
+  avatarUrl   String?
+  status      String     @default("ACTIVE") // ACTIVE, SUSPENDED, INACTIVE
+  lastLoginAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  roles       UserRole[]
+  auditLogs   AuditLog[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String     @unique // 'admin', 'directivo', 'coordinador', 'tutor', 'docente', 'estudiante', 'administrativo'
+  displayName String
+  description String?
+  isSystem    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id         String   @id @default(cuid())
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  code          String   @unique // 'tutorias', 'proyectos-integradores', 'control-escolar', etc.
+  name          String
+  description   String
+  url           String
+  icon          String   // Lucide icon name, e.g. 'Users', 'FolderKanban', 'GraduationCap', 'BookOpen', 'Building2', etc.
+  category      String   // 'Académica', 'Gestión', 'Servicios', 'Administración'
+  authType      String   @default("GOOGLE_SESSION") // 'GOOGLE_SESSION', 'SSO_JWT_TOKEN', 'DIRECT_LINK', 'OIDC_FEDERATED'
+  openIn        String   @default("_blank") // '_blank', '_self'
+  orderIndex    Int      @default(0)
+  status        String   @default("ACTIVE") // 'ACTIVE', 'MAINTENANCE', 'INACTIVE'
+  isVisible     Boolean  @default(true)
+  requiredRoles String   @default("") // Comma-separated role names: 'admin,tutor,coordinador' or empty for all
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("applications")
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  userId         String?
+  userEmail      String?
+  action         String   // 'AUTH_LOGIN', 'AUTH_LOGOUT', 'APP_LAUNCH', 'APP_CREATE', 'APP_UPDATE', 'APP_DELETE', 'ROLE_ASSIGN', 'ROLE_REVOKE'
+  targetResource String?  // e.g. 'application:tutorias', 'user:brenda@utzmg.edu.mx'
+  details        String?  // JSON stringified details
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
