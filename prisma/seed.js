@@ -61,7 +61,7 @@ async function main() {
       code: 'proyectos-integradores',
       name: 'Sistema de Evaluación de Proyectos Integradores',
       description: 'Plataforma para asignación de jurados, registro de rúbricas de evaluación, fechas de exposición y actas de proyectos integradores.',
-      url: 'https://evaluacion-proyectos-frontend-wkgt.onrender.com/evaluaciones',
+      url: 'https://evaluacion-proyectos-frontend-wkgt.onrender.com/sso',
       icon: 'FolderKanban',
       category: 'Académica',
       authType: 'SSO_JWT_TOKEN',
