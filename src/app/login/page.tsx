@@ -3,16 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  ShieldCheck, 
-  ArrowRight, 
-  Sparkles, 
-  AlertCircle, 
-  Lock, 
-  GraduationCap, 
-  Building2,
-  CheckCircle2
+import {
+  ArrowRight,
+  Sparkles,
+  AlertCircle,
+  Lock,
 } from 'lucide-react';
+import { isEmailOnlyLoginAllowedClient } from '@/lib/login-policy';
 
 const INSTITUTIONAL_DOMAIN = 'utzmg.edu.mx';
 const INSTITUTIONAL_SUFFIX = `@${INSTITUTIONAL_DOMAIN}`;
@@ -32,9 +29,12 @@ function toUsernamePart(value: string): string {
   return trimmed.split('@')[0];
 }
 
+const allowEmailOnlyLogin = isEmailOnlyLoginAllowedClient();
+
 const GOOGLE_ERROR_MESSAGES: Record<string, string> = {
-  google_not_configured:
-    'Google OAuth no está configurado. Use su correo @utzmg.edu.mx o contacte al administrador.',
+  google_not_configured: allowEmailOnlyLogin
+    ? 'Google OAuth no está configurado. Use su usuario @utzmg.edu.mx o contacte al administrador.'
+    : 'Google OAuth no está configurado. Contacte al administrador del Portal.',
   domain_not_allowed: 'Solo se permiten cuentas con dominio @utzmg.edu.mx.',
   google_auth_failed: 'No se pudo completar la autenticación con Google.',
   google_token_failed: 'Error al validar la sesión con Google.',
@@ -145,7 +145,7 @@ export default function LoginPage() {
               window.location.href = '/api/auth/google';
             }}
             disabled={isSubmitting}
-            className="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all mb-2 group"
+            className={`w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all group ${allowEmailOnlyLogin ? 'mb-2' : 'mb-0'}`}
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -167,62 +167,65 @@ export default function LoginPage() {
             </svg>
             <span>Ingresar con Google</span>
           </button>
-          <p className="text-[11px] text-gray-500 text-center mb-6 leading-relaxed">
-            Te redirige a Google para confirmar tu cuenta @utzmg.edu.mx y traer tu nombre y foto de perfil.
+          <p className={`text-[11px] text-gray-500 text-center leading-relaxed ${allowEmailOnlyLogin ? 'mb-6' : 'mb-2'}`}>
+            Accede con tu cuenta institucional @utzmg.edu.mx de Google Workspace.
           </p>
 
-          {/* Institutional Divider */}
-          <div className="relative my-6 text-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
-            </div>
-            <span className="relative px-3 bg-white text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-              o solo con tu usuario
-            </span>
-          </div>
-
-          {/* Acceso rápido por usuario (sin pasar por Google) */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-xs font-semibold text-gray-700 mb-1.5">
-                Usuario institucional
-              </label>
-              <div className="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-utzmg-green focus-within:border-transparent transition-all">
-                <input
-                  id="username"
-                  type="text"
-                  autoComplete="username"
-                  spellCheck={false}
-                  placeholder="mariana.garcia"
-                  value={username}
-                  onChange={(e) => setUsername(toUsernamePart(e.target.value))}
-                  className="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none placeholder:text-gray-400"
-                  required
-                />
-                <span className="px-3 py-3 bg-gray-50 border-l border-gray-200 text-xs text-gray-500 font-mono shrink-0 flex items-center">
-                  {INSTITUTIONAL_SUFFIX}
+          {allowEmailOnlyLogin && (
+            <>
+              {/* Solo desarrollo: acceso rápido sin Google */}
+              <div className="relative my-6 text-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <span className="relative px-3 bg-white text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                  solo desarrollo — o con tu usuario
                 </span>
               </div>
-              <p className="mt-1.5 text-[11px] text-gray-400">
-                Escribe solo tu usuario; el dominio {INSTITUTIONAL_SUFFIX} se agrega al continuar.
-              </p>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3.5 px-4 rounded-xl text-sm font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
-            >
-              {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span>Continuar al Portal</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="username" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                    Usuario institucional
+                  </label>
+                  <div className="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-utzmg-green focus-within:border-transparent transition-all">
+                    <input
+                      id="username"
+                      type="text"
+                      autoComplete="username"
+                      spellCheck={false}
+                      placeholder="mariana.garcia"
+                      value={username}
+                      onChange={(e) => setUsername(toUsernamePart(e.target.value))}
+                      className="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none placeholder:text-gray-400"
+                      required
+                    />
+                    <span className="px-3 py-3 bg-gray-50 border-l border-gray-200 text-xs text-gray-500 font-mono shrink-0 flex items-center">
+                      {INSTITUTIONAL_SUFFIX}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-gray-400">
+                    Escribe solo tu usuario; el dominio {INSTITUTIONAL_SUFFIX} se agrega al continuar.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 px-4 rounded-xl text-sm font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
+                >
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>Continuar al Portal</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </>
+          )}
 
           {/* Quick Demo Switcher (Simulación de Roles para pruebas) */}
           {demoUsers.length > 0 && (

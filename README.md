@@ -91,6 +91,8 @@ JWT_SECRET="clave-secreta-institucional-utzmg"
 INSTITUTIONAL_DOMAIN="utzmg.edu.mx"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ENABLE_DEMO_ACCOUNTS="true"
+ALLOW_EMAIL_ONLY_LOGIN="true"
+NEXT_PUBLIC_ALLOW_EMAIL_ONLY_LOGIN="true"
 ```
 
 ### 3. Crear base de datos y cargar datos iniciales
@@ -122,11 +124,12 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ## 🔑 Acceso Institucional
 
+- **Producción**: solo **Ingresar con Google** (cuenta `@utzmg.edu.mx` verificada por Google Workspace)
+- **Desarrollo local**: opcional acceso por usuario con `ALLOW_EMAIL_ONLY_LOGIN=true`
 - **Administrador del Portal**: `apps@utzmg.edu.mx` (rol `admin`, acceso a ambas aplicaciones y panel administrativo)
-- Cualquier usuario con correo `@utzmg.edu.mx` puede iniciar sesión directamente
 - Los roles se asignan desde **Administración → Roles** o al primer acceso según el correo institucional
 
-> **Nota**: Las cuentas de simulación están desactivadas. En Render, configura `ENABLE_DEMO_ACCOUNTS=false`.
+> **Nota**: En Render no configures `ALLOW_EMAIL_ONLY_LOGIN` ni `ENABLE_DEMO_ACCOUNTS` (o déjalos en `false`).
 
 ---
 

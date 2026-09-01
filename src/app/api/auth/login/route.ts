@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { signInInstitutionalUser } from '@/lib/institutional-login';
 import { SESSION_COOKIE_NAME } from '@/lib/auth';
+import { isEmailOnlyLoginAllowed } from '@/lib/login-policy';
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isEmailOnlyLoginAllowed()) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: 'El acceso por correo está deshabilitado. Use Ingresar con Google.',
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { email, name, avatarUrl } = body;
 
