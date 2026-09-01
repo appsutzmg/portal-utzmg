@@ -120,16 +120,13 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🔑 Cuentas de Demostración Configuradas
+## 🔑 Acceso Institucional
 
-Para pruebas inmediatas en el portal ([http://localhost:3000](http://localhost:3000)):
+- **Administrador del Portal**: `apps@utzmg.edu.mx` (rol `admin`, acceso a ambas aplicaciones y panel administrativo)
+- Cualquier usuario con correo `@utzmg.edu.mx` puede iniciar sesión directamente
+- Los roles se asignan desde **Administración → Roles** o al primer acceso según el correo institucional
 
-- `admin@utzmg.edu.mx` → Rol: **Administrador** (Visualiza ambas aplicaciones y el menú de administración)
-- `profesor@utzmg.edu.mx` → Rol: **Profesor** (Visualiza Proyectos Integradores y Tutorías)
-- `coordinador.proyectos@utzmg.edu.mx` → Rol: **Coordinador de Proyectos** (Visualiza únicamente Proyectos Integradores)
-- `asistente.proyectos@utzmg.edu.mx` → Rol: **Asistente** (Visualiza únicamente Proyectos Integradores)
-- `tutor@utzmg.edu.mx` → Rol: **Tutor** (Visualiza únicamente Tutorías)
-- `direccion.academica@utzmg.edu.mx` → Rol: **Dirección Académica** (Visualiza únicamente Tutorías)
+> **Nota**: Las cuentas de simulación están desactivadas. En Render, configura `ENABLE_DEMO_ACCOUNTS=false`.
 
 ---
 
