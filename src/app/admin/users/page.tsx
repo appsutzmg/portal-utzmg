@@ -156,7 +156,7 @@ export default function AdminUsersPage() {
           <span>Control de Acceso Institucional</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          Gestión de Usuarios y Roles (RBAC)
+          Gestión de Usuarios Institucionales
         </h1>
         <p className="text-xs text-gray-500 mt-1">
           Asigna o revoca perfiles institucionales a las cuentas @utzmg.edu.mx.

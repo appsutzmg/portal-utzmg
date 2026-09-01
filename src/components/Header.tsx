@@ -92,6 +92,18 @@ export const Header: React.FC = () => {
                     }`}
                   >
                     <Users className="w-4 h-4 text-utzmg-green" />
+                    <span>Usuarios</span>
+                  </Link>
+
+                  <Link
+                    href="/admin/roles"
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
+                      pathname.startsWith('/admin/roles')
+                        ? 'bg-utzmg-mint text-utzmg-darkgreen'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <ShieldCheck className="w-4 h-4 text-utzmg-green" />
                     <span>Roles</span>
                   </Link>
 
@@ -215,7 +227,14 @@ export const Header: React.FC = () => {
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
                       >
-                        Roles y Permisos
+                        Usuarios
+                      </Link>
+                      <Link
+                        href="/admin/roles"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                      >
+                        Roles
                       </Link>
                       <Link
                         href="/admin/audit"

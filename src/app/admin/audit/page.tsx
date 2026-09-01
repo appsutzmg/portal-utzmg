@@ -152,6 +152,8 @@ export default function AdminAuditPage() {
             <option value="APP_UPDATE">Modificación de Aplicaciones</option>
             <option value="APP_DELETE">Eliminación de Aplicaciones</option>
             <option value="ROLE_UPDATE">Modificación de Roles</option>
+            <option value="ROLE_CREATE">Creación de Roles</option>
+            <option value="ROLE_DELETE">Eliminación de Roles</option>
           </select>
         </div>
 

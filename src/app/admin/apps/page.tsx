@@ -46,20 +46,17 @@ const AVAILABLE_ICONS = [
 
 const CATEGORIES = ['Académica', 'Gestión', 'Servicios', 'Administración'];
 
-const AVAILABLE_ROLES = [
-  { id: 'admin', label: 'Administrador' },
-  { id: 'profesor', label: 'Profesor' },
-  { id: 'coordinador_proyectos', label: 'Coordinador de Proyectos' },
-  { id: 'asistente', label: 'Asistente' },
-  { id: 'tutor', label: 'Tutor' },
-  { id: 'direccion_academica', label: 'Dirección Académica' },
-];
+interface RoleOption {
+  id: string;
+  label: string;
+}
 
 export default function AdminAppsPage() {
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   const [apps, setApps] = useState<ApplicationItem[]>([]);
+  const [availableRoles, setAvailableRoles] = useState<RoleOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   
@@ -93,11 +90,27 @@ export default function AdminAppsPage() {
   const fetchApps = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/applications?adminView=true');
-      if (res.ok) {
-        const data = await res.json();
+      const [appsRes, rolesRes] = await Promise.all([
+        fetch('/api/applications?adminView=true'),
+        fetch('/api/admin/roles'),
+      ]);
+
+      if (appsRes.ok) {
+        const data = await appsRes.json();
         if (data.ok) {
           setApps(data.applications || []);
+        }
+      }
+
+      if (rolesRes.ok) {
+        const rolesData = await rolesRes.json();
+        if (rolesData.ok) {
+          setAvailableRoles(
+            (rolesData.roles || []).map((r: { name: string; displayName: string }) => ({
+              id: r.name,
+              label: r.displayName,
+            }))
+          );
         }
       }
     } catch (err) {
@@ -574,7 +587,7 @@ export default function AdminAppsPage() {
 
                   {!allCommunityAccess && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                      {AVAILABLE_ROLES.map((role) => (
+                      {availableRoles.map((role) => (
                         <label
                           key={role.id}
                           className={`p-2 rounded-xl border text-xs font-medium flex items-center space-x-2 cursor-pointer transition-all ${
