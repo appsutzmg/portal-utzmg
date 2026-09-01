@@ -14,6 +14,24 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+const INSTITUTIONAL_DOMAIN = 'utzmg.edu.mx';
+const INSTITUTIONAL_SUFFIX = `@${INSTITUTIONAL_DOMAIN}`;
+
+/** Acepta "mariana" o "mariana@utzmg.edu.mx" y devuelve el correo completo. */
+function toInstitutionalEmail(value: string): string {
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return '';
+  if (trimmed.includes('@')) return trimmed;
+  return `${trimmed}${INSTITUTIONAL_SUFFIX}`;
+}
+
+/** Extrae solo la parte antes de @ para el campo de usuario. */
+function toUsernamePart(value: string): string {
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return '';
+  return trimmed.split('@')[0];
+}
+
 const GOOGLE_ERROR_MESSAGES: Record<string, string> = {
   google_not_configured:
     'Google OAuth no está configurado. Use su correo @utzmg.edu.mx o contacte al administrador.',
@@ -28,7 +46,7 @@ export default function LoginPage() {
   const { user, login, demoUsers, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,13 +68,14 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setError('Por favor introduce tu correo institucional');
+    if (!username.trim()) {
+      setError('Por favor introduce tu usuario institucional');
       return;
     }
 
-    if (!email.toLowerCase().endsWith('@utzmg.edu.mx')) {
-      setError('Acceso restringido: El correo debe terminar en @utzmg.edu.mx');
+    const email = toInstitutionalEmail(username);
+    if (!email.endsWith(INSTITUTIONAL_SUFFIX)) {
+      setError(`Acceso restringido: El correo debe terminar en ${INSTITUTIONAL_SUFFIX}`);
       return;
     }
 
@@ -118,7 +137,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Google Workspace Button — obtiene foto de perfil de Google */}
+          {/* Google OAuth: verifica identidad con Google y trae nombre/foto */}
           <button
             type="button"
             onClick={() => {
@@ -126,7 +145,7 @@ export default function LoginPage() {
               window.location.href = '/api/auth/google';
             }}
             disabled={isSubmitting}
-            className="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all mb-6 group"
+            className="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all mb-2 group"
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -146,8 +165,11 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Ingresar con Google Workspace</span>
+            <span>Ingresar con Google</span>
           </button>
+          <p className="text-[11px] text-gray-500 text-center mb-6 leading-relaxed">
+            Te redirige a Google para confirmar tu cuenta @utzmg.edu.mx y traer tu nombre y foto de perfil.
+          </p>
 
           {/* Institutional Divider */}
           <div className="relative my-6 text-center">
@@ -155,30 +177,35 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-200" />
             </div>
             <span className="relative px-3 bg-white text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-              o con tu correo @utzmg.edu.mx
+              o solo con tu usuario
             </span>
           </div>
 
-          {/* Email Direct Form */}
+          {/* Acceso rápido por usuario (sin pasar por Google) */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold text-gray-700 mb-1.5">
-                Correo Electrónico Institucional
+              <label htmlFor="username" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                Usuario institucional
               </label>
-              <div className="relative">
+              <div className="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-utzmg-green focus-within:border-transparent transition-all">
                 <input
-                  id="email"
-                  type="email"
-                  placeholder="usuario@utzmg.edu.mx"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green focus:border-transparent transition-all placeholder:text-gray-400"
+                  id="username"
+                  type="text"
+                  autoComplete="username"
+                  spellCheck={false}
+                  placeholder="mariana.garcia"
+                  value={username}
+                  onChange={(e) => setUsername(toUsernamePart(e.target.value))}
+                  className="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none placeholder:text-gray-400"
                   required
                 />
-                <span className="absolute right-3 top-3 text-xs text-gray-400 font-mono">
-                  @utzmg.edu.mx
+                <span className="px-3 py-3 bg-gray-50 border-l border-gray-200 text-xs text-gray-500 font-mono shrink-0 flex items-center">
+                  {INSTITUTIONAL_SUFFIX}
                 </span>
               </div>
+              <p className="mt-1.5 text-[11px] text-gray-400">
+                Escribe solo tu usuario; el dominio {INSTITUTIONAL_SUFFIX} se agrega al continuar.
+              </p>
             </div>
 
             <button
