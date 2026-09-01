@@ -14,6 +14,16 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+const GOOGLE_ERROR_MESSAGES: Record<string, string> = {
+  google_not_configured:
+    'Google OAuth no está configurado. Use su correo @utzmg.edu.mx o contacte al administrador.',
+  domain_not_allowed: 'Solo se permiten cuentas con dominio @utzmg.edu.mx.',
+  google_auth_failed: 'No se pudo completar la autenticación con Google.',
+  google_token_failed: 'Error al validar la sesión con Google.',
+  google_profile_failed: 'No se pudo obtener su perfil de Google.',
+  google_callback_error: 'Ocurrió un error al procesar el inicio de sesión con Google.',
+};
+
 export default function LoginPage() {
   const { user, login, demoUsers, isLoading: authLoading } = useAuth();
   const router = useRouter();
@@ -27,6 +37,16 @@ export default function LoginPage() {
       router.replace('/dashboard');
     }
   }, [user, authLoading, router]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlError = params.get('error');
+    if (urlError) {
+      setError(
+        GOOGLE_ERROR_MESSAGES[urlError] || decodeURIComponent(urlError)
+      );
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,15 +118,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Google Workspace Button */}
+          {/* Google Workspace Button — obtiene foto de perfil de Google */}
           <button
+            type="button"
             onClick={() => {
-              if (!email) {
-                setEmail('apps@utzmg.edu.mx');
-                login('apps@utzmg.edu.mx');
-              } else {
-                login(email);
-              }
+              setError(null);
+              window.location.href = '/api/auth/google';
             }}
             disabled={isSubmitting}
             className="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all mb-6 group"

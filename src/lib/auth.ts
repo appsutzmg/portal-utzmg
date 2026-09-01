@@ -2,6 +2,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 import prisma from './prisma';
+import { mapDbUserToSession } from './user-profile';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'utzmg-portal-secure-jwt-secret-key-2026-xyz-institutional'
@@ -16,6 +17,7 @@ export interface UserSession {
   name: string;
   avatarUrl?: string | null;
   roles: string[];
+  roleLabels: string[];
   isAdmin: boolean;
 }
 
@@ -72,6 +74,7 @@ export async function verifyToken(token: string): Promise<UserSession | null> {
       name: payload.name as string,
       avatarUrl: (payload.avatarUrl as string) || null,
       roles: (payload.roles as string[]) || [],
+      roleLabels: (payload.roleLabels as string[]) || [],
       isAdmin: !!payload.isAdmin,
     };
   } catch (err) {
@@ -104,15 +107,7 @@ export async function getCurrentUserFromCookie(): Promise<UserSession | null> {
     return null;
   }
 
-  const roles = dbUser.roles.map((r) => r.role.name);
-  return {
-    id: dbUser.id,
-    email: dbUser.email,
-    name: dbUser.name,
-    avatarUrl: dbUser.avatarUrl,
-    roles,
-    isAdmin: roles.includes('admin'),
-  };
+  return mapDbUserToSession(dbUser);
 }
 
 export async function getCurrentUserFromRequest(request: NextRequest): Promise<UserSession | null> {
@@ -146,15 +141,7 @@ export async function getCurrentUserFromRequest(request: NextRequest): Promise<U
     return null;
   }
 
-  const roles = dbUser.roles.map((r) => r.role.name);
-  return {
-    id: dbUser.id,
-    email: dbUser.email,
-    name: dbUser.name,
-    avatarUrl: dbUser.avatarUrl,
-    roles,
-    isAdmin: roles.includes('admin'),
-  };
+  return mapDbUserToSession(dbUser);
 }
 
 export { SESSION_COOKIE_NAME, ALLOWED_DOMAIN };

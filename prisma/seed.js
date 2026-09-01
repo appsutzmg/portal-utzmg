@@ -78,7 +78,7 @@ async function main() {
       url: 'https://script.google.com/a/macros/utzmg.edu.mx/s/AKfycbyGEEIK0ohZB3eECRYPZXdVmJbECsIHUTiql5U3J78HNonoSBp242blSAHwePj8wDhe/exec',
       icon: 'Users',
       category: 'Académica',
-      authType: 'GOOGLE_SESSION',
+      authType: 'SSO_JWT_TOKEN',
       openIn: '_blank',
       orderIndex: 2,
       status: 'ACTIVE',

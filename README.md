@@ -130,6 +130,46 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ---
 
+## 🔗 SSO con Evaluación de Proyectos (sin doble login)
+
+El portal genera un token JWT al hacer clic en **Ingresar** y redirige a:
+
+`https://evaluacion-proyectos-frontend-wkgt.onrender.com/sso?sso_token=...`
+
+El sistema de proyectos valida ese token y abre la sesión automáticamente.
+
+### Configuración requerida (Render)
+
+**Portal UTZMG** (`portal-utzmg`):
+```env
+JWT_SECRET=utzmg-portal-secure-jwt-secret-key-2026-xyz-institutional
+```
+
+**Backend Evaluación de Proyectos** (`evaluacion-proyectos-backend`):
+```env
+PORTAL_JWT_SECRET=utzmg-portal-secure-jwt-secret-key-2026-xyz-institutional
+JWT_SECRET=<secreto propio de evaluación de proyectos>
+```
+
+> **Importante:** `PORTAL_JWT_SECRET` debe ser **idéntico** al `JWT_SECRET` del portal.  
+> No uses `JWT_SECRET` del backend de proyectos para validar el token del portal — son secretos distintos.
+
+Después de agregar `PORTAL_JWT_SECRET` en Render, redeploy el backend de evaluación de proyectos.
+
+### Tutorías (Google Apps Script)
+
+En **Propiedades del script** o hoja **Configuración** del proyecto Tutorías, agregar:
+
+```env
+PORTAL_JWT_SECRET=utzmg-portal-secure-jwt-secret-key-2026-xyz-institutional
+```
+
+Luego **Implementar → Nueva implementación** de la Web App. El portal enviará `?sso_token=...` y Tutorías abrirá sesión automáticamente sin pedir Google de nuevo.
+
+En el catálogo del portal, Tutorías debe tener `authType: SSO_JWT_TOKEN` (ya configurado en el seed).
+
+---
+
 ### Soporte Técnico Institucional
 Para dudas, reporte de incidencias o solicitud de permisos especiales:
 - **Correo**: `apps@utzmg.edu.mx`

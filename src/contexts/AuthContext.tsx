@@ -9,6 +9,7 @@ export interface User {
   name: string;
   avatarUrl?: string | null;
   roles: string[];
+  roleLabels?: string[];
   isAdmin: boolean;
 }
 
@@ -28,6 +29,9 @@ interface AuthContextType {
   login: (email: string, name?: string) => Promise<{ ok: boolean; message?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  updateAvatar: (avatarData: string) => Promise<{ ok: boolean; message?: string }>;
+  removeAvatar: () => Promise<{ ok: boolean; message?: string }>;
+  updateName: (name: string) => Promise<{ ok: boolean; message?: string }>;
   hasRole: (role: string) => boolean;
   hasAnyRole: (roles: string[]) => boolean;
 }
@@ -123,6 +127,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await fetchCurrentUser();
   };
 
+  const updateAvatar = async (avatarData: string) => {
+    try {
+      const res = await fetch('/api/profile/avatar', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatarData }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        setUser(data.user);
+        return { ok: true, message: data.message };
+      }
+
+      return { ok: false, message: data.message || 'Error al actualizar la foto' };
+    } catch (err) {
+      console.error('Error updating avatar:', err);
+      return { ok: false, message: 'Error de conexión al guardar la foto' };
+    }
+  };
+
+  const removeAvatar = async () => {
+    try {
+      const res = await fetch('/api/profile/avatar', { method: 'DELETE' });
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        setUser(data.user);
+        return { ok: true, message: data.message };
+      }
+
+      return { ok: false, message: data.message || 'Error al eliminar la foto' };
+    } catch (err) {
+      console.error('Error removing avatar:', err);
+      return { ok: false, message: 'Error de conexión al eliminar la foto' };
+    }
+  };
+
+  const updateName = async (name: string) => {
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.ok) {
+        setUser(data.user);
+        return { ok: true, message: data.message };
+      }
+
+      return { ok: false, message: data.message || 'Error al actualizar el nombre' };
+    } catch (err) {
+      console.error('Error updating name:', err);
+      return { ok: false, message: 'Error de conexión al guardar el nombre' };
+    }
+  };
+
   const hasRole = (role: string): boolean => {
     if (!user) return false;
     if (user.isAdmin) return true;
@@ -146,6 +211,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         refreshUser,
+        updateAvatar,
+        removeAvatar,
+        updateName,
         hasRole,
         hasAnyRole,
       }}

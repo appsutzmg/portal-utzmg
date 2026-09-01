@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { getFirstName } from '@/lib/user-profile';
 import { AppCard, ApplicationItem } from '@/components/AppCard';
 import { 
   Search, 
@@ -107,7 +108,7 @@ export default function DashboardPage() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Hola, {user.name}
+            Hola, {getFirstName(user.name)}
           </h1>
 
           <p className="mt-2 text-emerald-100 text-sm sm:text-base leading-relaxed">

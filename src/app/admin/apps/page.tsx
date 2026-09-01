@@ -44,6 +44,12 @@ const AVAILABLE_ICONS = [
   'Laptop',
 ];
 
+const AUTH_TYPES = [
+  { value: 'SSO_JWT_TOKEN', label: 'SSO Portal (sin doble login)' },
+  { value: 'GOOGLE_SESSION', label: 'Sesión Google del navegador' },
+  { value: 'DIRECT_LINK', label: 'Enlace directo' },
+];
+
 const CATEGORIES = ['Académica', 'Gestión', 'Servicios', 'Administración'];
 
 interface RoleOption {
@@ -527,6 +533,27 @@ export default function AdminAppsPage() {
                     onChange={(e) => setFormUrl(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green"
                   />
+                </div>
+
+                {/* Auth Type — required for SSO */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Tipo de autenticación
+                  </label>
+                  <select
+                    value={formAuthType}
+                    onChange={(e) => setFormAuthType(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white"
+                  >
+                    {AUTH_TYPES.map((t) => (
+                      <option key={t.value} value={t.value}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    Use <strong>SSO Portal</strong> para Proyectos y Tutorías (evita pedir login otra vez).
+                  </p>
                 </div>
 
                 {/* Description */}
