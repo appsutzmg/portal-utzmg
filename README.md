@@ -137,31 +137,28 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 En el plan gratuito de Render, el servicio se **apaga tras ~15 minutos** sin tráfico. El primer acceso después puede tardar 30–60 segundos (cold start).
 
-**Solución recomendada (sin costo extra):** usar [UptimeRobot](https://uptimerobot.com) para hacer ping cada 5 minutos.
+**Solución recomendada (sin costo extra):** el backend de **Evaluación de Proyectos** (servicio de pago) hace ping al Portal cada 14 minutos.
 
-### Paso 1 — Endpoint de salud
+### Configuración en Render (backend de Proyectos)
 
-El portal expone:
+En el servicio `evaluacion-proyectos-backend`, agregar:
 
+```env
+PORTAL_URL=https://portal-utzmg.onrender.com
 ```
-GET https://TU-PORTAL.onrender.com/api/health
+
+Opcional:
+
+```env
+PORTAL_KEEPALIVE_INTERVAL_MS=840000
+PORTAL_KEEPALIVE_ENABLED=false
 ```
 
-Respuesta esperada: `{"ok":true,"service":"portal-utzmg",...}`
+El backend llama a `https://portal-utzmg.onrender.com/api/health` al arrancar y cada 14 minutos. En los logs verás: `💚 Portal keep-alive OK`.
 
-### Paso 2 — Configurar UptimeRobot
+### Alternativa externa
 
-1. Crea cuenta gratuita en [uptimerobot.com](https://uptimerobot.com)
-2. **Add New Monitor**
-3. **Monitor Type:** HTTP(s)
-4. **Friendly Name:** Portal UTZMG
-5. **URL:** `https://TU-PORTAL.onrender.com/api/health`
-6. **Monitoring Interval:** 5 minutes
-7. Guardar
-
-En unos minutos el monitor debería mostrar **Up** y el Portal dejará de dormirse entre usos.
-
-> **Nota:** UptimeRobot también puede avisarte por correo si el Portal cae de verdad (no solo por cold start).
+Si prefieres no depender del backend de Proyectos, puedes usar [UptimeRobot](https://uptimerobot.com) con la misma URL `/api/health` cada 5 minutos.
 
 ---
 
