@@ -133,6 +133,38 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ---
 
+## ⏰ Mantener el Portal despierto (Render plan gratuito)
+
+En el plan gratuito de Render, el servicio se **apaga tras ~15 minutos** sin tráfico. El primer acceso después puede tardar 30–60 segundos (cold start).
+
+**Solución recomendada (sin costo extra):** usar [UptimeRobot](https://uptimerobot.com) para hacer ping cada 5 minutos.
+
+### Paso 1 — Endpoint de salud
+
+El portal expone:
+
+```
+GET https://TU-PORTAL.onrender.com/api/health
+```
+
+Respuesta esperada: `{"ok":true,"service":"portal-utzmg",...}`
+
+### Paso 2 — Configurar UptimeRobot
+
+1. Crea cuenta gratuita en [uptimerobot.com](https://uptimerobot.com)
+2. **Add New Monitor**
+3. **Monitor Type:** HTTP(s)
+4. **Friendly Name:** Portal UTZMG
+5. **URL:** `https://TU-PORTAL.onrender.com/api/health`
+6. **Monitoring Interval:** 5 minutes
+7. Guardar
+
+En unos minutos el monitor debería mostrar **Up** y el Portal dejará de dormirse entre usos.
+
+> **Nota:** UptimeRobot también puede avisarte por correo si el Portal cae de verdad (no solo por cold start).
+
+---
+
 ## 🔗 SSO con Evaluación de Proyectos (sin doble login)
 
 El portal genera un token JWT al hacer clic en **Ingresar** y redirige a:
