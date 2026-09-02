@@ -110,9 +110,6 @@ export default function DashboardPage() {
               className="ring-2 ring-white shadow-md shrink-0"
             />
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-utzmg-green">
-                Portal Institucional UTZMG
-              </p>
               <h1 className="truncate text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl">
                 Hola, {getFirstName(user.name)}
               </h1>
