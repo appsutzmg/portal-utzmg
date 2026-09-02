@@ -114,7 +114,7 @@ export default function AdminAuditPage() {
         <button
           onClick={fetchLogs}
           disabled={isLoading}
-          className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:bg-gray-950 text-gray-700 dark:text-gray-300 flex items-center space-x-1.5 shadow-sm transition-all"
+          className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 flex items-center space-x-1.5 shadow-sm transition-all"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-utzmg-green' : ''}`} />
           <span>Actualizar Registro</span>
@@ -184,7 +184,7 @@ export default function AdminAuditPage() {
               </thead>
               <tbody className="divide-y divide-gray-100 font-mono text-xs">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50 dark:bg-gray-950/80 transition-colors">
+                  <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-colors">
                     
                     {/* Timestamp */}
                     <td className="py-3.5 px-4 text-gray-500 whitespace-nowrap">
