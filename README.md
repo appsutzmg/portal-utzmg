@@ -34,7 +34,7 @@ Punto único de acceso (Launchpad / Hub Institucional) para la comunidad univers
 
 - **Framework**: Next.js 14+ (App Router) / React 18 / TypeScript
 - **Estilos e Interfaz**: Tailwind CSS + Lucide Icons (Identidad visual oficial UTZMG: Verde institucional `#006837`, verde acento `#00A859`)
-- **Base de Datos & ORM**: Prisma ORM con SQLite (desarrollo/local) o PostgreSQL (producción)
+- **Base de Datos & ORM**: Prisma ORM con **MongoDB** (Atlas en producción, Docker local opcional)
 - **Seguridad y Criptografía**: `jose` (JWT firmado), Cookies seguras
 
 ---
@@ -84,22 +84,28 @@ Portal-utzmg/
 npm install
 ```
 
-### 2. Base de datos PostgreSQL (local)
+### 2. Base de datos MongoDB (local)
 
-Con Docker (recomendado):
+Con Docker (opcional, para desarrollo sin Atlas):
 
 ```bash
 npm run db:up
 ```
 
-Esto levanta PostgreSQL en `localhost:5432` (usuario/contraseña/base: `portal` / `portal` / `portal_utzmg`).
+Esto levanta MongoDB en `mongodb://localhost:27017/portal_utzmg`.
+
+También puedes usar tu cluster de **MongoDB Atlas** con una base `portal_utzmg` (recomendado si ya tienes cuenta).
 
 ### 3. Configurar variables de entorno (`.env`)
 
 Copia `.env.example` a `.env` y ajusta si hace falta:
 
 ```env
-DATABASE_URL="postgresql://portal:portal@localhost:5432/portal_utzmg"
+# Local Docker:
+DATABASE_URL="mongodb://localhost:27017/portal_utzmg"
+# Atlas (producción):
+# DATABASE_URL="mongodb+srv://usuario:password@cluster.mongodb.net/portal_utzmg?retryWrites=true&w=majority"
+
 JWT_SECRET="clave-secreta-institucional-utzmg"
 INSTITUTIONAL_DOMAIN="utzmg.edu.mx"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
@@ -108,7 +114,7 @@ ALLOW_EMAIL_ONLY_LOGIN="true"
 NEXT_PUBLIC_ALLOW_EMAIL_ONLY_LOGIN="true"
 ```
 
-### 4. Crear tablas y cargar datos iniciales
+### 4. Crear colecciones y cargar datos iniciales
 ```bash
 npx prisma db push
 npm run db:seed
@@ -146,25 +152,26 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 💾 Persistencia de datos (logos, usuarios, roles)
+## 💾 Persistencia de datos (logos, usuarios, apps)
 
-El portal usa **PostgreSQL** (local con Docker, producción en Render). Los datos **no deben perderse** en redeploys si `DATABASE_URL` apunta a un servicio Postgres persistente.
+El portal usa **MongoDB Atlas** (plan M0 gratuito). Los datos persisten fuera del contenedor de Render, así que **sobreviven redeploys**.
 
-### Migrar producción en Render (checklist)
+### Configurar MongoDB Atlas (producción)
 
-1. **New → PostgreSQL** en Render — para producción usa plan **de pago** (Basic ~$6/mes); el gratuito expira a los **30 días**.
-2. Copia la **Internal Database URL** del servicio PostgreSQL.
-3. En **portal-utzmg → Environment** → `DATABASE_URL` = esa URL (`postgresql://...`).
-4. **Manual Deploy** del portal (el build ejecuta `prisma db push` y crea las tablas).
-5. Una sola vez, carga datos base (roles, apps, admin):
+1. En [MongoDB Atlas](https://cloud.mongodb.com) → tu cluster existente (p. ej. el de Evaluación de Proyectos).
+2. **Add Database** → nombre: `portal_utzmg` (base separada, no mezclar con Proyectos).
+3. **Database Access** → usuario con lectura/escritura (o reutiliza uno existente).
+4. **Network Access** → permite `0.0.0.0/0` (Render no tiene IP fija) o la IP de Render si la conoces.
+5. **Connect** → copia la connection string `mongodb+srv://...` y reemplaza `<dbname>` por `portal_utzmg`.
+6. En Render → **portal-utzmg → Environment** → `DATABASE_URL` = esa URL.
+7. **Manual Deploy** (el build ejecuta `prisma db push` y crea las colecciones).
+8. Una sola vez, desde tu máquina con la misma `DATABASE_URL`:
    ```bash
-   # Desde tu máquina, con DATABASE_URL apuntando a Render (External URL + SSL):
    npm run db:seed
    ```
-   O entra como admin y configura apps/usuarios desde el panel.
-6. Vuelve a subir logos y usuarios que tenías antes (la base nueva empieza vacía).
+9. Configura apps, logos y usuarios desde el panel admin (quedan guardados en Atlas).
 
-> **No uses** `file:./dev.db` en Render — el disco del contenedor es efímero y borra todo en cada redeploy.
+> **No uses** SQLite ni archivos locales en Render — el disco del contenedor es efímero.
 
 ### Script de seed (seguro)
 
@@ -271,7 +278,7 @@ Para dudas, reporte de incidencias o solicitud de permisos especiales:
    - **Build Command**: `npm install && npx prisma db push && npm run build`
    - **Start Command**: `npm start`
 3. Agregar las variables de entorno en Render:
-   - `DATABASE_URL`: URL de conexión PostgreSQL (Render Postgres o externo).
+   - `DATABASE_URL`: Connection string MongoDB Atlas (`mongodb+srv://.../portal_utzmg`).
    - `JWT_SECRET`: Cadena segura para firma de tokens.
    - `INSTITUTIONAL_DOMAIN`: `utzmg.edu.mx`.
    - `ENABLE_DEMO_ACCOUNTS`: `false` (en producción oficial).

@@ -1,14 +1,10 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: portal
-      POSTGRES_PASSWORD: portal
-      POSTGRES_DB: portal_utzmg
+  mongo:
+    image: mongo:7
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - portal_pg_data:/var/lib/postgresql/data
+      - portal_mongo_data:/data/db
 
 volumes:
-  portal_pg_data:
+  portal_mongo_data:

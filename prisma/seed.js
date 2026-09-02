@@ -72,6 +72,7 @@ async function main() {
 
   if (process.env.SEED_FORCE_RESET === 'true') {
     console.warn('⚠️ SEED_FORCE_RESET=true — borrando catálogo, usuarios y roles (solo desarrollo).');
+    await prisma.auditLog.deleteMany({});
     await prisma.application.deleteMany({});
     await prisma.userRole.deleteMany({});
     await prisma.user.deleteMany({});
@@ -163,7 +164,7 @@ async function main() {
   }
 
   console.log('🚀 Seed completado sin borrar datos existentes.');
-  console.log('   Tip: en producción use PostgreSQL en Render; SQLite local no persiste en redeploys.');
+  console.log('   Tip: en producción use MongoDB Atlas (DATABASE_URL mongodb+srv://...).');
 }
 
 main()

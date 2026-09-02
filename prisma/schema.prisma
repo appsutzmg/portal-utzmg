@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String     @id @default(cuid())
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   email       String     @unique
   name        String
   avatarUrl   String?
@@ -24,8 +24,8 @@ model User {
 }
 
 model Role {
-  id          String     @id @default(cuid())
-  name        String     @unique // 'admin', 'directivo', 'coordinador', 'tutor', 'docente', 'estudiante', 'administrativo'
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String     @unique // 'admin', 'directivo', 'coordinador', 'tutor', 'docente', etc.
   displayName String
   description String?
   isSystem    Boolean    @default(true)
@@ -37,33 +37,33 @@ model Role {
 }
 
 model UserRole {
-  id         String   @id @default(cuid())
-  userId     String
-  roleId     String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  roleId     String   @db.ObjectId
   assignedAt DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+  role       Role     @relation(fields: [roleId], references: [id])
 
   @@unique([userId, roleId])
   @@map("user_roles")
 }
 
 model Application {
-  id            String   @id @default(cuid())
-  code          String   @unique // 'tutorias', 'proyectos-integradores', 'control-escolar', etc.
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  code          String   @unique // 'tutorias', 'proyectos-integradores', etc.
   name          String
   description   String
   url           String
   icon          String   // Lucide icon name (fallback si no hay logoUrl)
   logoUrl       String?  // Logo personalizado (base64 data URL)
   category      String   // 'Académica', 'Gestión', 'Servicios', 'Administración'
-  authType      String   @default("GOOGLE_SESSION") // 'GOOGLE_SESSION', 'SSO_JWT_TOKEN', 'DIRECT_LINK', 'OIDC_FEDERATED'
+  authType      String   @default("GOOGLE_SESSION") // 'GOOGLE_SESSION', 'SSO_JWT_TOKEN', etc.
   openIn        String   @default("_blank") // '_blank', '_self'
   orderIndex    Int      @default(0)
   status        String   @default("ACTIVE") // 'ACTIVE', 'MAINTENANCE', 'INACTIVE'
   isVisible     Boolean  @default(true)
-  requiredRoles String   @default("") // Comma-separated role names: 'admin,tutor,coordinador' or empty for all
+  requiredRoles String   @default("") // Comma-separated role names
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -71,17 +71,17 @@ model Application {
 }
 
 model AuditLog {
-  id             String   @id @default(cuid())
-  userId         String?
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String?  @db.ObjectId
   userEmail      String?
-  action         String   // 'AUTH_LOGIN', 'AUTH_LOGOUT', 'APP_LAUNCH', 'APP_CREATE', 'APP_UPDATE', 'APP_DELETE', 'ROLE_ASSIGN', 'ROLE_REVOKE'
-  targetResource String?  // e.g. 'application:tutorias', 'user:brenda@utzmg.edu.mx'
+  action         String   // 'AUTH_LOGIN', 'APP_LAUNCH', 'APP_CREATE', etc.
+  targetResource String?
   details        String?  // JSON stringified details
   ipAddress      String?
   userAgent      String?
   createdAt      DateTime @default(now())
 
-  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user           User?    @relation(fields: [userId], references: [id])
 
   @@index([action])
   @@index([createdAt])
