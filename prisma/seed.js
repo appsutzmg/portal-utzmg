@@ -10,12 +10,12 @@ const rolesData = [
   {
     name: 'profesor',
     displayName: 'Profesor',
-    description: 'Acceso a Proyectos Integradores y Sistema de Tutorías',
+    description: 'Acceso al Sistema de Tutorías (no incluye Proyectos Integradores)',
   },
   {
     name: 'coordinador_proyectos',
-    displayName: 'Coordinador de Proyectos',
-    description: 'Coordinación y gestión de proyectos integradores',
+    displayName: 'Encargado de Proyectos',
+    description: 'Gestión y evaluación de proyectos integradores (requiere este rol además de profesor si también es docente)',
   },
   {
     name: 'asistente',
@@ -48,7 +48,7 @@ const applicationsData = [
     orderIndex: 1,
     status: 'ACTIVE',
     isVisible: true,
-    requiredRoles: 'admin,profesor,asistente,coordinador_proyectos',
+    requiredRoles: 'admin,coordinador_proyectos,asistente',
   },
   {
     code: 'tutorias',

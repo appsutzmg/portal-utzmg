@@ -133,11 +133,13 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 | Rol Institucional | Código del Rol | Acceso a Proyectos Integradores | Acceso a Tutorías | Panel Administrativo |
 | :--- | :--- | :---: | :---: | :---: |
 | **Administrador** | `admin` | ✅ | ✅ | ✅ |
-| **Profesor / Docente** | `profesor` | ✅ | ✅ | ❌ |
-| **Coordinador de Proyectos** | `coordinador_proyectos` | ✅ | ❌ | ❌ |
+| **Profesor / Docente** | `profesor` | ❌ | ✅ | ❌ |
+| **Encargado de Proyectos** | `coordinador_proyectos` | ✅ | ❌* | ❌ |
 | **Asistente** | `asistente` | ✅ | ❌ | ❌ |
 | **Tutor** | `tutor` | ❌ | ✅ | ❌ |
 | **Dirección Académica** | `direccion_academica` | ❌ | ✅ | ❌ |
+
+\* Un encargado que también es docente debe tener **`profesor` + `coordinador_proyectos`** para ver Proyectos y Tutorías.
 
 ---
 
