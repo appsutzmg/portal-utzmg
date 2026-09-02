@@ -14,6 +14,7 @@ import {
   Loader2,
   Pencil
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export const Header: React.FC = () => {
   const { user, logout, demoUsers, login, updateAvatar, removeAvatar, updateName } = useAuth();
@@ -88,14 +89,14 @@ export const Header: React.FC = () => {
   });
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           
           {/* Logo & Brand */}
           <div className="flex items-center space-x-4">
             <Link href="/dashboard" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 rounded-xl bg-white p-1 border border-gray-100 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-gray-800 p-1 border border-gray-100 dark:border-gray-700 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
                 <img
                   src="/logo.png"
                   alt="Logo UTZMG"
@@ -104,14 +105,14 @@ export const Header: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-gray-900 text-lg tracking-tight group-hover:text-utzmg-green transition-colors">
+                  <span className="font-bold text-gray-900 dark:text-gray-100 text-lg tracking-tight group-hover:text-utzmg-green dark:group-hover:text-emerald-400 transition-colors">
                     PORTAL UTZMG
                   </span>
-                  <span className="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">
+                  <span className="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 rounded-full">
                     Institucional
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 hidden md:block">
+                <p className="text-xs text-gray-500 dark:text-gray-400 hidden md:block">
                   Universidad Tecnológica de la Zona Metropolitana de Guadalajara
                 </p>
               </div>
@@ -120,7 +121,8 @@ export const Header: React.FC = () => {
 
           {/* Right side: User Profile & Demo Switcher */}
           <div className="flex items-center space-x-3">
-            
+            <ThemeToggle />
+
             {/* Demo Quick Switcher Button (if available) */}
             {demoUsers.length > 0 && (
               <div className="relative">
@@ -135,8 +137,8 @@ export const Header: React.FC = () => {
                 </button>
 
                 {showDemoDropdown && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
-                    <div className="px-3 py-1.5 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-800 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       Cambiar usuario institucional
                     </div>
                     {demoUsers.map((du) => (
@@ -146,19 +148,19 @@ export const Header: React.FC = () => {
                           setShowDemoDropdown(false);
                           await login(du.email);
                         }}
-                        className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition-colors flex items-center justify-between text-xs ${
-                          user.email === du.email ? 'bg-emerald-50 text-utzmg-darkgreen font-semibold' : 'text-gray-700'
+                        className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-between text-xs ${
+                          user.email === du.email ? 'bg-emerald-50 dark:bg-emerald-900/30 text-utzmg-darkgreen dark:text-emerald-200 font-semibold' : 'text-gray-700 dark:text-gray-300'
                         }`}
                       >
                         <div className="truncate pr-2">
-                          <p className="font-medium text-gray-900 truncate">{du.name}</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{du.name}</p>
                           <p className="text-gray-400 text-[11px] truncate">{du.email}</p>
                         </div>
                         <div className="flex flex-wrap gap-1 justify-end">
                           {du.roleKeys.slice(0, 2).map((r) => (
                             <span
                               key={r}
-                              className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 text-gray-600 capitalize"
+                              className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 capitalize"
                             >
                               {r}
                             </span>
@@ -175,14 +177,14 @@ export const Header: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2.5 p-1.5 rounded-full sm:rounded-xl hover:bg-gray-100 transition-colors"
+                className="flex items-center space-x-2.5 p-1.5 rounded-full sm:rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <UserAvatar name={user.name} avatarUrl={user.avatarUrl} size="sm" />
                 <div className="hidden lg:block text-left pr-1 min-w-0">
-                  <p className="text-xs font-semibold text-gray-900 leading-tight truncate max-w-[160px]">
+                  <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 leading-tight truncate max-w-[160px]">
                     {user.name}
                   </p>
-                  <p className="text-[11px] text-gray-500 leading-tight truncate max-w-[160px]">
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-tight truncate max-w-[160px]">
                     {userSubtitle}
                   </p>
                 </div>
@@ -190,8 +192,8 @@ export const Header: React.FC = () => {
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
-                  <div className="px-4 py-3 border-b border-gray-100">
+                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                     <div className="flex items-center space-x-3">
                       <UserAvatar name={user.name} avatarUrl={user.avatarUrl} size="lg" />
                       <div className="min-w-0 flex-1">
@@ -201,7 +203,7 @@ export const Header: React.FC = () => {
                               type="text"
                               value={nameDraft}
                               onChange={(e) => setNameDraft(e.target.value)}
-                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-utzmg-green"
+                              className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-utzmg-green"
                               placeholder="Tu nombre completo"
                               maxLength={120}
                             />
@@ -220,7 +222,7 @@ export const Header: React.FC = () => {
                                   setEditingName(false);
                                   setNameMessage(null);
                                 }}
-                                className="px-2 py-1 text-[11px] font-medium text-gray-600 bg-gray-100 rounded-md"
+                                className="px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-md"
                               >
                                 Cancelar
                               </button>
@@ -228,7 +230,7 @@ export const Header: React.FC = () => {
                           </div>
                         ) : (
                           <div className="flex items-start gap-1.5 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate flex-1">{user.name}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate flex-1">{user.name}</p>
                             <button
                               type="button"
                               onClick={() => {
@@ -251,7 +253,7 @@ export const Header: React.FC = () => {
                       {user.roles.map((role) => (
                         <span
                           key={role}
-                          className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 text-utzmg-darkgreen rounded-full border border-emerald-200 uppercase tracking-wider"
+                          className="px-2 py-0.5 text-[11px] font-medium bg-emerald-50 dark:bg-emerald-900/30 text-utzmg-darkgreen dark:text-emerald-200 rounded-full border border-emerald-200 dark:border-emerald-800 uppercase tracking-wider"
                         >
                           {role}
                         </span>
@@ -284,7 +286,7 @@ export const Header: React.FC = () => {
                           type="button"
                           disabled={avatarLoading}
                           onClick={handleRemoveAvatar}
-                          className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors disabled:opacity-60"
+                          className="flex items-center space-x-1.5 px-2.5 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors disabled:opacity-60"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Quitar foto</span>
@@ -305,35 +307,35 @@ export const Header: React.FC = () => {
                   </div>
 
                   {user.isAdmin && (
-                    <div className="py-1 border-b border-gray-100">
+                    <div className="py-1 border-b border-gray-100 dark:border-gray-800">
                       <p className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
                         Administración
                       </p>
                       <Link
                         href="/admin/apps"
                         onClick={() => setShowUserMenu(false)}
-                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         Gestión de Aplicaciones
                       </Link>
                       <Link
                         href="/admin/users"
                         onClick={() => setShowUserMenu(false)}
-                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         Usuarios
                       </Link>
                       <Link
                         href="/admin/roles"
                         onClick={() => setShowUserMenu(false)}
-                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         Roles
                       </Link>
                       <Link
                         href="/admin/audit"
                         onClick={() => setShowUserMenu(false)}
-                        className="block px-4 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         Bitácora de Auditoría
                       </Link>
@@ -345,7 +347,7 @@ export const Header: React.FC = () => {
                       setShowUserMenu(false);
                       await logout();
                     }}
-                    className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors mt-1"
+                    className="w-full text-left px-4 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center space-x-2 transition-colors mt-1"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Cerrar Sesión</span>

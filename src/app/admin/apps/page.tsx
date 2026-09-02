@@ -305,7 +305,7 @@ export default function AdminAppsPage() {
             <Shield className="w-3.5 h-3.5" />
             <span>Panel de Administración Institucional</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
             Gestión del Catálogo de Aplicaciones
           </h1>
           <p className="text-xs text-gray-500 mt-1">
@@ -323,7 +323,7 @@ export default function AdminAppsPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative w-full sm:max-w-sm">
           <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
           <input
@@ -331,24 +331,24 @@ export default function AdminAppsPage() {
             placeholder="Filtrar por nombre o clave..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green"
           />
         </div>
         <div className="text-xs text-gray-500 font-medium">
-          Total registradas: <span className="font-bold text-gray-900">{apps.length}</span>
+          Total registradas: <span className="font-bold text-gray-900 dark:text-gray-100">{apps.length}</span>
         </div>
       </div>
 
       {/* Applications Table / Cards */}
       {isLoading ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-xs text-gray-500">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-12 text-center text-xs text-gray-500">
           Cargando catálogo institucional...
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-950 text-gray-500 text-xs uppercase font-semibold border-b border-gray-200 dark:border-gray-800">
                 <tr>
                   <th className="py-3.5 px-4">Orden</th>
                   <th className="py-3.5 px-4">Aplicación</th>
@@ -360,7 +360,7 @@ export default function AdminAppsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredApps.map((app) => (
-                  <tr key={app.id} className="hover:bg-gray-50/80 transition-colors">
+                  <tr key={app.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-colors">
                     
                     {/* Order */}
                     <td className="py-4 px-4 font-mono text-xs text-gray-400 font-bold">
@@ -378,7 +378,7 @@ export default function AdminAppsPage() {
                           fallbackClassName="w-10 h-10 rounded-xl bg-emerald-50 text-utzmg-green flex items-center justify-center shrink-0 border border-emerald-100"
                         />
                         <div className="max-w-xs">
-                          <p className="font-bold text-gray-900 leading-tight truncate">{app.name}</p>
+                          <p className="font-bold text-gray-900 dark:text-gray-100 leading-tight truncate">{app.name}</p>
                           <p className="text-xs text-gray-400 font-mono mt-0.5">{app.code}</p>
                         </div>
                       </div>
@@ -386,7 +386,7 @@ export default function AdminAppsPage() {
 
                     {/* Category */}
                     <td className="py-4 px-4">
-                      <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 text-gray-700">
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 text-gray-700 dark:text-gray-300">
                         {app.category}
                       </span>
                     </td>
@@ -402,7 +402,7 @@ export default function AdminAppsPage() {
                           {app.requiredRoles.split(',').map((r) => (
                             <span
                               key={r}
-                              className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-700 rounded capitalize"
+                              className="px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-700 dark:text-gray-300 rounded capitalize"
                             >
                               {r.trim()}
                             </span>
@@ -422,7 +422,7 @@ export default function AdminAppsPage() {
                           Mantenimiento
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                        <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 dark:text-gray-400 rounded-full">
                           Inactiva
                         </span>
                       )}
@@ -433,7 +433,7 @@ export default function AdminAppsPage() {
                       <div className="flex items-center justify-end space-x-2">
                         <button
                           onClick={() => openEditModal(app)}
-                          className="p-1.5 text-gray-600 hover:text-utzmg-green hover:bg-emerald-50 rounded-lg transition-colors"
+                          className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-utzmg-green hover:bg-emerald-50 rounded-lg transition-colors"
                           title="Editar aplicación"
                         >
                           <Edit className="w-4 h-4" />
@@ -459,12 +459,12 @@ export default function AdminAppsPage() {
       {/* Modal Form (Create / Edit) */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800 mb-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   {editingApp ? 'Editar Aplicación Institucional' : 'Registrar Nueva Aplicación'}
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
@@ -473,7 +473,7 @@ export default function AdminAppsPage() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-xl hover:bg-gray-100 transition-colors"
+                className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -500,7 +500,7 @@ export default function AdminAppsPage() {
                 
                 {/* Name */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Nombre Visible de la Aplicación *
                   </label>
                   <input
@@ -515,7 +515,7 @@ export default function AdminAppsPage() {
 
                 {/* Code (Slug) */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Código Único (Slug) *
                   </label>
                   <input
@@ -531,13 +531,13 @@ export default function AdminAppsPage() {
 
                 {/* Category */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Categoría
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white dark:bg-gray-900"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -549,7 +549,7 @@ export default function AdminAppsPage() {
 
                 {/* URL */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     URL de la Aplicación *
                   </label>
                   <input
@@ -564,13 +564,13 @@ export default function AdminAppsPage() {
 
                 {/* Auth Type — required for SSO */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Tipo de autenticación
                   </label>
                   <select
                     value={formAuthType}
                     onChange={(e) => setFormAuthType(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white dark:bg-gray-900"
                   >
                     {AUTH_TYPES.map((t) => (
                       <option key={t.value} value={t.value}>
@@ -585,7 +585,7 @@ export default function AdminAppsPage() {
 
                 {/* Description */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Descripción Breve
                   </label>
                   <textarea
@@ -599,10 +599,10 @@ export default function AdminAppsPage() {
 
                 {/* Logo de la aplicación */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Logo de la aplicación
                   </label>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-50 dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <ApplicationIcon
                       icon={formIcon}
                       logoUrl={formLogoUrl}
@@ -619,7 +619,7 @@ export default function AdminAppsPage() {
                         <button
                           type="button"
                           onClick={() => logoInputRef.current?.click()}
-                          className="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 bg-white hover:bg-gray-50 flex items-center space-x-1.5"
+                          className="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center space-x-1.5"
                         >
                           <ImagePlus className="w-4 h-4" />
                           <span>{formLogoUrl ? 'Cambiar logo' : 'Subir logo'}</span>
@@ -650,10 +650,10 @@ export default function AdminAppsPage() {
 
                 {/* Icon Selector */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Icono de respaldo
                   </label>
-                  <div className="grid grid-cols-6 sm:grid-cols-9 gap-2 p-3 bg-gray-50 rounded-2xl border border-gray-200">
+                  <div className="grid grid-cols-6 sm:grid-cols-9 gap-2 p-3 bg-gray-50 dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800">
                     {AVAILABLE_ICONS.map((iconName) => (
                       <button
                         key={iconName}
@@ -662,7 +662,7 @@ export default function AdminAppsPage() {
                         className={`p-2.5 rounded-xl flex items-center justify-center transition-all ${
                           formIcon === iconName
                             ? 'bg-utzmg-green text-white shadow-md scale-105'
-                            : 'bg-white text-gray-600 hover:bg-gray-100'
+                            : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-100'
                         }`}
                         title={iconName}
                       >
@@ -674,7 +674,7 @@ export default function AdminAppsPage() {
 
                 {/* Roles Selection */}
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Roles Autorizados
                   </label>
                   
@@ -698,7 +698,7 @@ export default function AdminAppsPage() {
                           className={`p-2 rounded-xl border text-xs font-medium flex items-center space-x-2 cursor-pointer transition-all ${
                             formRoles.includes(role.id)
                               ? 'bg-emerald-50 border-emerald-300 text-utzmg-darkgreen font-semibold'
-                              : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                              : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
                           }`}
                         >
                           <input
@@ -716,13 +716,13 @@ export default function AdminAppsPage() {
 
                 {/* Status & Open in */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Estado Operativo
                   </label>
                   <select
                     value={formStatus}
                     onChange={(e) => setFormStatus(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white dark:bg-gray-900"
                   >
                     <option value="ACTIVE">Operativa (Activa)</option>
                     <option value="MAINTENANCE">En Mantenimiento</option>
@@ -731,7 +731,7 @@ export default function AdminAppsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                     Orden de Visualización
                   </label>
                   <input
@@ -746,11 +746,11 @@ export default function AdminAppsPage() {
               </div>
 
               {/* Modal Buttons */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100 mt-6">
+              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100 dark:border-gray-800 mt-6">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 transition-colors"
                 >
                   Cancelar
                 </button>

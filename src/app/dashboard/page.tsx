@@ -95,8 +95,8 @@ export default function DashboardPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
       {/* Banner compacto institucional */}
-      <div className="relative mb-6 overflow-hidden rounded-2xl border border-emerald-100/80 bg-white shadow-sm">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(0,104,55,0.08)_0%,_transparent_55%),linear-gradient(135deg,#f0fdf4_0%,#ffffff_45%,#f8fafc_100%)]" />
+      <div className="relative mb-6 overflow-hidden rounded-2xl border border-emerald-100/80 dark:border-emerald-900/50 bg-white dark:bg-gray-900 shadow-sm">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(0,104,55,0.08)_0%,_transparent_55%),linear-gradient(135deg,#f0fdf4_0%,#ffffff_45%,#f8fafc_100%)] dark:bg-[radial-gradient(ellipse_at_top_right,_rgba(0,104,55,0.15)_0%,_transparent_55%),linear-gradient(135deg,#052e16_0%,#111827_45%,#030712_100%)]" />
         <div className="absolute -right-6 -top-10 h-28 w-28 rounded-full bg-utzmg-green/10 blur-2xl" />
         <div className="absolute -bottom-8 left-1/3 h-24 w-24 rounded-full bg-emerald-200/20 blur-2xl" />
         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-utzmg-gradient" />
@@ -110,7 +110,7 @@ export default function DashboardPage() {
               className="ring-2 ring-white shadow-md shrink-0"
             />
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl">
+              <h1 className="truncate text-xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-2xl">
                 Hola, {getFirstName(user.name)}
               </h1>
               <p className="mt-0.5 text-xs text-gray-500 sm:text-sm">
@@ -148,7 +148,7 @@ export default function DashboardPage() {
             placeholder="Buscar por nombre, descripción o servicio..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green focus:border-transparent transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-utzmg-green focus:border-transparent transition-all shadow-sm"
           />
         </div>
 
@@ -161,7 +161,7 @@ export default function DashboardPage() {
               className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 ${
                 selectedCategory === cat
                   ? 'bg-utzmg-darkgreen text-white shadow-sm'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                  : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
               }`}
             >
               {cat}
@@ -184,7 +184,7 @@ export default function DashboardPage() {
 
       {/* Applications Grid Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center space-x-2">
           <LayoutGrid className="w-5 h-5 text-utzmg-green" />
           <span>Aplicaciones Disponibles</span>
         </h2>
@@ -197,21 +197,21 @@ export default function DashboardPage() {
       {isLoadingApps ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-white rounded-2xl border border-gray-100 p-6 animate-pulse space-y-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-xl" />
-              <div className="h-4 bg-gray-100 rounded w-3/4" />
-              <div className="h-3 bg-gray-100 rounded w-full" />
-              <div className="h-3 bg-gray-100 rounded w-5/6" />
-              <div className="h-10 bg-gray-100 rounded-xl mt-4" />
+            <div key={n} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 animate-pulse space-y-4">
+              <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl" />
+              <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/4" />
+              <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-full" />
+              <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-5/6" />
+              <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded-xl mt-4" />
             </div>
           ))}
         </div>
       ) : filteredApps.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center max-w-md mx-auto my-8">
-          <div className="w-14 h-14 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 p-12 text-center max-w-md mx-auto my-8">
+          <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 flex items-center justify-center mx-auto mb-4">
             <LayoutGrid className="w-7 h-7" />
           </div>
-          <h3 className="text-base font-bold text-gray-900 mb-1">
+          <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-1">
             No se encontraron aplicaciones
           </h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-4">
@@ -242,10 +242,10 @@ export default function DashboardPage() {
       )}
 
       {/* Institutional Notice Footer */}
-      <div className="mt-12 p-4 rounded-2xl bg-gray-50 border border-gray-200 flex items-start space-x-3 text-xs text-gray-600">
+      <div className="mt-12 p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 flex items-start space-x-3 text-xs text-gray-600 dark:text-gray-400">
         <Info className="w-4 h-4 text-utzmg-green shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <span className="font-semibold text-gray-800">Nota Institucional:</span> Las aplicaciones mostradas se encuentran vinculadas a tu cuenta institucional. Si necesitas acceso a una aplicación adicional o cambio de rol, escribe a <a href="mailto:apps@utzmg.edu.mx" className="text-utzmg-green font-semibold underline hover:text-utzmg-darkgreen">apps@utzmg.edu.mx</a>.
+          <span className="font-semibold text-gray-800 dark:text-gray-200">Nota Institucional:</span> Las aplicaciones mostradas se encuentran vinculadas a tu cuenta institucional. Si necesitas acceso a una aplicación adicional o cambio de rol, escribe a <a href="mailto:apps@utzmg.edu.mx" className="text-utzmg-green font-semibold underline hover:text-utzmg-darkgreen">apps@utzmg.edu.mx</a>.
         </div>
       </div>
 

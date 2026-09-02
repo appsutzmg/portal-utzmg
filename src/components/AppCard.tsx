@@ -83,7 +83,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
 
   return (
     <div
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${isInactive ? 'opacity-65' : ''}`}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-gray-900 shadow-sm transition-all duration-300 hover:shadow-lg dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-black/20 ${isInactive ? 'opacity-65' : ''}`}
       style={{
         borderWidth: 2,
         borderStyle: 'solid',
@@ -147,13 +147,13 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
           </div>
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-700">
+        <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
           {app.description}
         </p>
 
         {requiredRolesList.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-1">
-            <span className="mr-1 flex items-center text-[11px] text-gray-500">
+            <span className="mr-1 flex items-center text-[11px] text-gray-500 dark:text-gray-400">
               <Shield className="mr-0.5 h-3 w-3" /> Roles:
             </span>
             {requiredRolesList.map((role) => (

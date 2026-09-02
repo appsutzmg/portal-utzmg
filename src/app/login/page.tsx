@@ -10,6 +10,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { isEmailOnlyLoginAllowedClient } from '@/lib/login-policy';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const INSTITUTIONAL_DOMAIN = 'utzmg.edu.mx';
 const INSTITUTIONAL_SUFFIX = `@${INSTITUTIONAL_DOMAIN}`;
@@ -100,25 +101,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[88vh] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-utzmg-subtle">
+    <div className="min-h-[88vh] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-utzmg-subtle relative">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <ThemeToggle showLabel />
+      </div>
       <div className="max-w-md w-full">
         
         {/* Main Login Card */}
-        <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 sm:p-10 relative overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 sm:p-10 relative overflow-hidden">
           
           {/* Top Decorative Green Accent Bar */}
           <div className="absolute top-0 left-0 right-0 h-2 bg-utzmg-gradient" />
 
           {/* Logo & Header */}
           <div className="text-center mb-8">
-            <div className="w-24 h-24 bg-white rounded-2xl p-2 shadow-sm border border-gray-100 flex items-center justify-center mx-auto mb-4">
+            <div className="w-24 h-24 bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center justify-center mx-auto mb-4">
               <img
                 src="/logo.png"
                 alt="Logo Institucional UTZMG"
                 className="w-full h-full object-contain"
               />
             </div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
+            <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               PORTAL UTZMG
             </h1>
             <p className="text-sm font-semibold text-utzmg-darkgreen mt-1">
@@ -145,7 +149,7 @@ export default function LoginPage() {
               window.location.href = '/api/auth/google';
             }}
             disabled={isSubmitting}
-            className={`w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all group ${allowEmailOnlyLogin ? 'mb-2' : 'mb-0'}`}
+            className={`w-full py-3.5 px-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-2xl text-sm font-semibold flex items-center justify-center space-x-3 shadow-sm hover:shadow transition-all group ${allowEmailOnlyLogin ? 'mb-2' : 'mb-0'}`}
           >
             <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
               <path
@@ -178,7 +182,7 @@ export default function LoginPage() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200" />
                 </div>
-                <span className="relative px-3 bg-white text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                <span className="relative px-3 bg-white dark:bg-gray-900 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                   solo desarrollo — o con tu usuario
                 </span>
               </div>
@@ -188,7 +192,7 @@ export default function LoginPage() {
                   <label htmlFor="username" className="block text-xs font-semibold text-gray-700 mb-1.5">
                     Usuario institucional
                   </label>
-                  <div className="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-utzmg-green focus-within:border-transparent transition-all">
+                  <div className="flex rounded-xl border border-gray-300 dark:border-gray-600 overflow-hidden focus-within:ring-2 focus-within:ring-utzmg-green focus-within:border-transparent transition-all">
                     <input
                       id="username"
                       type="text"
@@ -197,10 +201,10 @@ export default function LoginPage() {
                       placeholder="mariana.garcia"
                       value={username}
                       onChange={(e) => setUsername(toUsernamePart(e.target.value))}
-                      className="flex-1 min-w-0 px-4 py-3 text-sm focus:outline-none placeholder:text-gray-400"
+                      className="flex-1 min-w-0 px-4 py-3 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none placeholder:text-gray-400"
                       required
                     />
-                    <span className="px-3 py-3 bg-gray-50 border-l border-gray-200 text-xs text-gray-500 font-mono shrink-0 flex items-center">
+                    <span className="px-3 py-3 bg-gray-50 dark:bg-gray-950 border-l border-gray-200 dark:border-gray-600 text-xs text-gray-500 dark:text-gray-400 font-mono shrink-0 flex items-center">
                       {INSTITUTIONAL_SUFFIX}
                     </span>
                   </div>
@@ -229,7 +233,7 @@ export default function LoginPage() {
 
           {/* Quick Demo Switcher (Simulación de Roles para pruebas) */}
           {demoUsers.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-gray-100">
+            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-gray-700 flex items-center space-x-1">
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -246,10 +250,10 @@ export default function LoginPage() {
                     key={du.id}
                     onClick={() => handleDemoSelect(du.email)}
                     disabled={isSubmitting}
-                    className="w-full text-left p-2.5 rounded-xl border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all flex items-center justify-between text-xs group"
+                    className="w-full text-left p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 transition-all flex items-center justify-between text-xs group"
                   >
                     <div>
-                      <p className="font-semibold text-gray-900 group-hover:text-utzmg-green">
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-utzmg-green dark:group-hover:text-emerald-400">
                         {du.name}
                       </p>
                       <p className="text-[11px] text-gray-400">{du.email}</p>

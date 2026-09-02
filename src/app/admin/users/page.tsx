@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
           <Shield className="w-3.5 h-3.5" />
           <span>Control de Acceso Institucional</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
           Gestión de Usuarios Institucionales
         </h1>
         <p className="text-xs text-gray-500 mt-1">
@@ -164,7 +164,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative w-full sm:max-w-sm">
           <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
           <input
@@ -172,24 +172,24 @@ export default function AdminUsersPage() {
             placeholder="Buscar por nombre o correo institucional..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green"
           />
         </div>
         <div className="text-xs text-gray-500 font-medium">
-          Usuarios registrados: <span className="font-bold text-gray-900">{usersList.length}</span>
+          Usuarios registrados: <span className="font-bold text-gray-900 dark:text-gray-100">{usersList.length}</span>
         </div>
       </div>
 
       {/* Users Table */}
       {isLoading ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-xs text-gray-500">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-12 text-center text-xs text-gray-500">
           Cargando usuarios institucionales...
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-950 text-gray-500 text-xs uppercase font-semibold border-b border-gray-200 dark:border-gray-800">
                 <tr>
                   <th className="py-3.5 px-4">Usuario</th>
                   <th className="py-3.5 px-4">Roles Asignados</th>
@@ -200,7 +200,7 @@ export default function AdminUsersPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
+                  <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-colors">
                     
                     {/* User profile */}
                     <td className="py-4 px-4">
@@ -209,7 +209,7 @@ export default function AdminUsersPage() {
                           {u.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">{u.name}</p>
+                          <p className="font-bold text-gray-900 dark:text-gray-100">{u.name}</p>
                           <p className="text-xs text-gray-400 font-mono">{u.email}</p>
                         </div>
                       </div>
@@ -282,11 +282,11 @@ export default function AdminUsersPage() {
       {/* Edit User Roles Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-lg w-full p-6 sm:p-8">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 max-w-lg w-full p-6 sm:p-8">
             
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-800 mb-6">
               <div>
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   Modificar Roles Institucionales
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
@@ -295,7 +295,7 @@ export default function AdminUsersPage() {
               </div>
               <button
                 onClick={() => setSelectedUser(null)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                className="p-1.5 text-gray-400 hover:text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -311,7 +311,7 @@ export default function AdminUsersPage() {
             <form onSubmit={handleSaveRoles} className="space-y-4">
               
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-2">
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Seleccionar Roles para este usuario:
                 </label>
                 <div className="space-y-2">
@@ -321,11 +321,11 @@ export default function AdminUsersPage() {
                       className={`p-3 rounded-xl border text-xs flex items-center justify-between cursor-pointer transition-all ${
                         selectedRoles.includes(role.name)
                           ? 'bg-emerald-50 border-emerald-300 text-utzmg-darkgreen font-semibold'
-                          : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                          : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'
                       }`}
                     >
                       <div>
-                        <p className="font-bold text-gray-900">{role.displayName}</p>
+                        <p className="font-bold text-gray-900 dark:text-gray-100">{role.displayName}</p>
                         <p className="text-[11px] text-gray-500 font-normal">{role.description}</p>
                       </div>
                       <input
@@ -340,24 +340,24 @@ export default function AdminUsersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                   Estado de la Cuenta
                 </label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white dark:bg-gray-900"
                 >
                   <option value="ACTIVE">Activo (Acceso permitido)</option>
                   <option value="SUSPENDED">Suspendido (Bloqueado)</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100 mt-6">
+              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100 dark:border-gray-800 mt-6">
                 <button
                   type="button"
                   onClick={() => setSelectedUser(null)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100"
                 >
                   Cancelar
                 </button>
