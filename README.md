@@ -152,7 +152,7 @@ El portal usa **PostgreSQL** (local con Docker, producción en Render). Los dato
 
 ### Migrar producción en Render (checklist)
 
-1. **New → PostgreSQL** en Render (plan gratuito 90 días o de pago).
+1. **New → PostgreSQL** en Render — para producción usa plan **de pago** (Basic ~$6/mes); el gratuito expira a los **30 días**.
 2. Copia la **Internal Database URL** del servicio PostgreSQL.
 3. En **portal-utzmg → Environment** → `DATABASE_URL` = esa URL (`postgresql://...`).
 4. **Manual Deploy** del portal (el build ejecuta `prisma db push` y crea las tablas).
