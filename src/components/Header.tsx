@@ -124,7 +124,8 @@ export const Header: React.FC = () => {
               </div>
             </Link>
 
-            {/* Navigation tabs */}
+            {/* Navegación — solo administradores (varias secciones); el resto usa el dashboard como inicio */}
+            {user.isAdmin && (
             <nav className="hidden md:flex space-x-1 pl-6">
               <Link
                 href="/dashboard"
@@ -138,8 +139,7 @@ export const Header: React.FC = () => {
                 <span>Aplicaciones</span>
               </Link>
 
-              {user.isAdmin && (
-                <div className="flex space-x-1">
+              <div className="flex space-x-1">
                   <Link
                     href="/admin/apps"
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
@@ -187,9 +187,9 @@ export const Header: React.FC = () => {
                     <History className="w-4 h-4 text-utzmg-green" />
                     <span>Auditoría</span>
                   </Link>
-                </div>
-              )}
+              </div>
             </nav>
+            )}
           </div>
 
           {/* Right side: User Profile & Demo Switcher */}
