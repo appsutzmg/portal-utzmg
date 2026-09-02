@@ -133,6 +133,51 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ---
 
+## 💾 Persistencia de datos (logos, usuarios, roles)
+
+Si los **logos**, **usuarios** o **roles** desaparecen tras un redeploy en Render, casi siempre es por una de estas causas:
+
+### 1. Base de datos SQLite en Render (causa principal)
+
+Si `DATABASE_URL` es `file:./dev.db`, la base vive **dentro del contenedor**. Cada **redeploy o reinicio** borra ese archivo y el portal arranca vacío.
+
+**Solución:** usar **PostgreSQL persistente** en Render:
+
+1. En Render → **New → PostgreSQL** (puede ser el plan gratuito de 90 días o el de pago).
+2. Copia la **Internal Database URL** del servicio PostgreSQL.
+3. En el servicio **portal-utzmg** → **Environment** → `DATABASE_URL` = esa URL (debe empezar con `postgresql://`).
+4. Cambia en `prisma/schema.prisma` la línea `provider = "sqlite"` por `provider = "postgresql"`.
+5. Redeploy del portal (el build ejecuta `prisma db push` y crea las tablas en Postgres).
+
+A partir de ahí, logos, usuarios y roles **sobreviven** a los redeploys.
+
+### 2. Script de seed destructivo (corregido)
+
+Antes, `npm run db:seed` **borraba todo** el catálogo y usuarios. Ahora el seed es **seguro**:
+
+- No elimina datos existentes.
+- Solo crea o actualiza roles y apps base.
+- **No sobrescribe `logoUrl`** (conserva logos subidos).
+- No borra usuarios que hayas dado de alta.
+
+Solo borra todo si ejecutas explícitamente (solo desarrollo):
+
+```bash
+SEED_FORCE_RESET=true npm run db:seed
+```
+
+### 3. No ejecutar seed en cada deploy
+
+El **Build Command** de Render debe ser:
+
+```bash
+npm install && npx prisma db push && npm run build
+```
+
+**No** incluyas `npm run db:seed` en el build de producción.
+
+---
+
 ## ⏰ Mantener el Portal despierto (Render plan gratuito)
 
 En el plan gratuito de Render, el servicio se **apaga tras ~15 minutos** sin tráfico. El primer acceso después puede tardar 30–60 segundos (cold start).

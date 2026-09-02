@@ -1,48 +1,82 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const rolesData = [
+  {
+    name: 'admin',
+    displayName: 'Administrador',
+    description: 'Acceso total y administración del portal, catálogo y ambas aplicaciones',
+  },
+  {
+    name: 'profesor',
+    displayName: 'Profesor',
+    description: 'Acceso a Proyectos Integradores y Sistema de Tutorías',
+  },
+  {
+    name: 'coordinador_proyectos',
+    displayName: 'Coordinador de Proyectos',
+    description: 'Coordinación y gestión de proyectos integradores',
+  },
+  {
+    name: 'asistente',
+    displayName: 'Asistente',
+    description: 'Asistencia y soporte en proyectos integradores',
+  },
+  {
+    name: 'tutor',
+    displayName: 'Tutor',
+    description: 'Seguimiento tutorial y sesiones de tutoría individual y grupal',
+  },
+  {
+    name: 'direccion_academica',
+    displayName: 'Dirección Académica',
+    description: 'Supervisión académica de tutorías y reportes institucionales',
+  },
+];
+
+const applicationsData = [
+  {
+    code: 'proyectos-integradores',
+    name: 'Sistema de Evaluación de Proyectos Integradores',
+    description:
+      'Plataforma para asignación de jurados, registro de rúbricas de evaluación, fechas de exposición y actas de proyectos integradores.',
+    url: 'https://evaluacion-proyectos-frontend-wkgt.onrender.com/sso',
+    icon: 'FolderKanban',
+    category: 'Académica',
+    authType: 'SSO_JWT_TOKEN',
+    openIn: '_blank',
+    orderIndex: 1,
+    status: 'ACTIVE',
+    isVisible: true,
+    requiredRoles: 'admin,profesor,asistente,coordinador_proyectos',
+  },
+  {
+    code: 'tutorias',
+    name: 'Sistema de Gestión de Tutorías',
+    description:
+      'Plataforma institucional para el seguimiento tutorial, registro de sesiones individuales/grupales, concentrados y evaluación cualitativa.',
+    url: 'https://script.google.com/a/macros/utzmg.edu.mx/s/AKfycbyGEEIK0ohZB3eECRYPZXdVmJbECsIHUTiql5U3J78HNonoSBp242blSAHwePj8wDhe/exec',
+    icon: 'Users',
+    category: 'Académica',
+    authType: 'SSO_JWT_TOKEN',
+    openIn: '_blank',
+    orderIndex: 2,
+    status: 'ACTIVE',
+    isVisible: true,
+    requiredRoles: 'admin,profesor,tutor,direccion_academica',
+  },
+];
+
 async function main() {
-  console.log('🌱 Configurando roles y aplicaciones de la UTZMG...');
+  console.log('🌱 Sincronizando datos iniciales del Portal UTZMG (modo seguro)...');
 
-  // Limpiar aplicaciones anteriores para dejar exactamente las 2 requeridas
-  await prisma.application.deleteMany({});
-  await prisma.userRole.deleteMany({});
-  await prisma.user.deleteMany({});
-  await prisma.role.deleteMany({});
-
-  // 1. Roles Institucionales Exactos
-  const rolesData = [
-    {
-      name: 'admin',
-      displayName: 'Administrador',
-      description: 'Acceso total y administración del portal, catálogo y ambas aplicaciones',
-    },
-    {
-      name: 'profesor',
-      displayName: 'Profesor',
-      description: 'Acceso a Proyectos Integradores y Sistema de Tutorías',
-    },
-    {
-      name: 'coordinador_proyectos',
-      displayName: 'Coordinador de Proyectos',
-      description: 'Coordinación y gestión de proyectos integradores',
-    },
-    {
-      name: 'asistente',
-      displayName: 'Asistente',
-      description: 'Asistencia y soporte en proyectos integradores',
-    },
-    {
-      name: 'tutor',
-      displayName: 'Tutor',
-      description: 'Seguimiento tutorial y sesiones de tutoría individual y grupal',
-    },
-    {
-      name: 'direccion_academica',
-      displayName: 'Dirección Académica',
-      description: 'Supervisión académica de tutorías y reportes institucionales',
-    },
-  ];
+  if (process.env.SEED_FORCE_RESET === 'true') {
+    console.warn('⚠️ SEED_FORCE_RESET=true — borrando catálogo, usuarios y roles (solo desarrollo).');
+    await prisma.application.deleteMany({});
+    await prisma.userRole.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.role.deleteMany({});
+  }
 
   const roleMap = {};
   for (const r of rolesData) {
@@ -53,90 +87,83 @@ async function main() {
     });
     roleMap[r.name] = role;
   }
-  console.log('✅ Roles institucionales creados');
-
-  // 2. Las 2 Aplicaciones Institucionales Actuales
-  const applicationsData = [
-    {
-      code: 'proyectos-integradores',
-      name: 'Sistema de Evaluación de Proyectos Integradores',
-      description: 'Plataforma para asignación de jurados, registro de rúbricas de evaluación, fechas de exposición y actas de proyectos integradores.',
-      url: 'https://evaluacion-proyectos-frontend-wkgt.onrender.com/sso',
-      icon: 'FolderKanban',
-      category: 'Académica',
-      authType: 'SSO_JWT_TOKEN',
-      openIn: '_blank',
-      orderIndex: 1,
-      status: 'ACTIVE',
-      isVisible: true,
-      requiredRoles: 'admin,profesor,asistente,coordinador_proyectos',
-    },
-    {
-      code: 'tutorias',
-      name: 'Sistema de Gestión de Tutorías',
-      description: 'Plataforma institucional para el seguimiento tutorial, registro de sesiones individuales/grupales, concentrados y evaluación cualitativa.',
-      url: 'https://script.google.com/a/macros/utzmg.edu.mx/s/AKfycbyGEEIK0ohZB3eECRYPZXdVmJbECsIHUTiql5U3J78HNonoSBp242blSAHwePj8wDhe/exec',
-      icon: 'Users',
-      category: 'Académica',
-      authType: 'SSO_JWT_TOKEN',
-      openIn: '_blank',
-      orderIndex: 2,
-      status: 'ACTIVE',
-      isVisible: true,
-      requiredRoles: 'admin,profesor,tutor,direccion_academica',
-    },
-  ];
+  console.log('✅ Roles institucionales verificados');
 
   for (const app of applicationsData) {
-    await prisma.application.create({
-      data: app,
+    await prisma.application.upsert({
+      where: { code: app.code },
+      update: {
+        name: app.name,
+        description: app.description,
+        url: app.url,
+        icon: app.icon,
+        category: app.category,
+        authType: app.authType,
+        openIn: app.openIn,
+        orderIndex: app.orderIndex,
+        status: app.status,
+        isVisible: app.isVisible,
+        requiredRoles: app.requiredRoles,
+        // logoUrl: no se toca — conserva logos subidos desde administración
+      },
+      create: app,
     });
   }
-  console.log('✅ Las 2 aplicaciones institucionales registradas con sus roles autorizados');
+  console.log('✅ Aplicaciones institucionales verificadas (logos y cambios del admin se conservan)');
 
-  // 3. Usuario Administrador Institucional Inicial (@utzmg.edu.mx)
-  const usersData = [
-    {
-      email: 'apps@utzmg.edu.mx',
+  const adminEmail = 'apps@utzmg.edu.mx';
+  const adminUser = await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: {
       name: 'Administrador Institucional UTZMG',
-      roles: ['admin'],
+      status: 'ACTIVE',
     },
-  ];
-
-  for (const u of usersData) {
-    const user = await prisma.user.create({
-      data: { email: u.email, name: u.name, status: 'ACTIVE' },
-    });
-
-    for (const roleName of u.roles) {
-      const role = roleMap[roleName];
-      if (role) {
-        await prisma.userRole.create({
-          data: {
-            userId: user.id,
-            roleId: role.id,
-          },
-        });
-      }
-    }
-  }
-  console.log('✅ Usuario Administrador (apps@utzmg.edu.mx) configurado con rol admin');
-
-  // 4. Bitácora de Auditoría
-  await prisma.auditLog.create({
-    data: {
-      userEmail: 'sistema@utzmg.edu.mx',
-      action: 'SYSTEM_INITIALIZATION',
-      targetResource: 'portal:config_actualizada',
-      details: JSON.stringify({
-        message: 'Portal UTZMG configurado con las 2 aplicaciones actuales y sus roles autorizados.',
-      }),
-      ipAddress: '127.0.0.1',
-      userAgent: 'Portal-UTZMG-Seed',
+    create: {
+      email: adminEmail,
+      name: 'Administrador Institucional UTZMG',
+      status: 'ACTIVE',
     },
   });
 
-  console.log('🚀 Base de datos sincronizada exitosamente.');
+  const adminRole = roleMap.admin;
+  if (adminRole) {
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId: {
+          userId: adminUser.id,
+          roleId: adminRole.id,
+        },
+      },
+      update: {},
+      create: {
+        userId: adminUser.id,
+        roleId: adminRole.id,
+      },
+    });
+  }
+  console.log(`✅ Usuario administrador verificado (${adminEmail})`);
+
+  const initLog = await prisma.auditLog.findFirst({
+    where: { action: 'SYSTEM_INITIALIZATION' },
+  });
+
+  if (!initLog) {
+    await prisma.auditLog.create({
+      data: {
+        userEmail: 'sistema@utzmg.edu.mx',
+        action: 'SYSTEM_INITIALIZATION',
+        targetResource: 'portal:config_actualizada',
+        details: JSON.stringify({
+          message: 'Portal UTZMG inicializado con aplicaciones y roles base.',
+        }),
+        ipAddress: '127.0.0.1',
+        userAgent: 'Portal-UTZMG-Seed',
+      },
+    });
+  }
+
+  console.log('🚀 Seed completado sin borrar datos existentes.');
+  console.log('   Tip: en producción use PostgreSQL en Render; SQLite local no persiste en redeploys.');
 }
 
 main()
