@@ -83,7 +83,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
 
   return (
     <div
-      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-gray-900 shadow-sm transition-all duration-300 hover:shadow-lg dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-black/20 ${isInactive ? 'opacity-65' : ''}`}
+      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white dark:bg-gray-900 shadow-sm transition-all duration-300 hover:shadow-lg dark:shadow-none dark:hover:shadow-lg dark:hover:shadow-black/20 ${isInactive ? 'opacity-65' : ''}`}
       style={{
         borderWidth: 2,
         borderStyle: 'solid',
@@ -93,9 +93,9 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
       {/* Franja superior — tono suave institucional */}
       <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: accentColor }} />
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex min-h-0 flex-1 flex-col p-5">
         {/* Encabezado: icono + badges */}
-        <div className="mb-4 flex items-start gap-4">
+        <div className="mb-4 flex shrink-0 items-start gap-4">
           <ApplicationIcon
             icon={app.icon}
             logoUrl={app.logoUrl}
@@ -147,12 +147,13 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
           </div>
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+        <p className="flex-1 text-sm leading-relaxed text-gray-700 dark:text-gray-300 md:min-h-[4.5rem]">
           {app.description}
         </p>
 
+        <div className="mt-4 shrink-0 md:mt-auto md:pt-4">
         {requiredRolesList.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1">
+          <div className="mb-4 flex flex-wrap gap-1">
             <span className="mr-1 flex items-center text-[11px] text-gray-500 dark:text-gray-400">
               <Shield className="mr-0.5 h-3 w-3" /> Roles:
             </span>
@@ -169,7 +170,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
         )}
 
         {errorMessage && (
-          <div className="mt-3 flex items-center space-x-1.5 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700">
+          <div className="mb-3 flex items-center space-x-1.5 rounded-lg border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
             <AlertTriangle className="h-4 w-4 shrink-0 text-red-500" />
             <span>{errorMessage}</span>
           </div>
@@ -178,7 +179,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
         <button
           onClick={handleLaunch}
           disabled={isLaunching || (!hasRoleAccess && !isAdmin)}
-          className={`mt-4 flex w-full items-center justify-center space-x-2 rounded-xl py-2.5 px-4 text-sm font-semibold transition-all shadow-sm ${
+          className={`flex w-full items-center justify-center space-x-2 rounded-xl py-2.5 px-4 text-sm font-semibold transition-all shadow-sm ${
             !hasRoleAccess && !isAdmin
               ? 'cursor-not-allowed bg-gray-100 text-gray-400'
               : isMaintenance && !isAdmin
@@ -225,6 +226,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
             </>
           )}
         </button>
+        </div>
       </div>
     </div>
   );
