@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { DynamicIcon } from '@/components/DynamicIcon';
+import { DynamicIcon, APP_ICON_NAMES } from '@/components/DynamicIcon';
 import { ApplicationIcon } from '@/components/ApplicationIcon';
 import { ApplicationItem } from '@/components/AppCard';
 import { 
@@ -25,26 +25,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const AVAILABLE_ICONS = [
-  'Users',
-  'FolderKanban',
-  'GraduationCap',
-  'BookOpen',
-  'Briefcase',
-  'ShieldCheck',
-  'FileText',
-  'Building2',
-  'Activity',
-  'Calendar',
-  'ClipboardList',
-  'BarChart3',
-  'Award',
-  'Layers',
-  'Globe',
-  'Database',
-  'Compass',
-  'Laptop',
-];
+const AVAILABLE_ICONS = APP_ICON_NAMES;
 
 const AUTH_TYPES = [
   { value: 'SSO_JWT_TOKEN', label: 'SSO Portal (sin doble login)' },
