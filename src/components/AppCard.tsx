@@ -147,7 +147,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
           </div>
         </div>
 
-        <p className="flex-1 text-sm leading-relaxed text-gray-700 line-clamp-3">
+        <p className="text-sm leading-relaxed text-gray-700">
           {app.description}
         </p>
 

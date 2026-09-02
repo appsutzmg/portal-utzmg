@@ -195,7 +195,7 @@ export default function DashboardPage() {
 
       {/* Applications Grid */}
       {isLoadingApps ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {[1, 2, 3].map((n) => (
             <div key={n} className="bg-white rounded-2xl border border-gray-100 p-6 animate-pulse space-y-4">
               <div className="w-12 h-12 bg-gray-100 rounded-xl" />
@@ -229,7 +229,7 @@ export default function DashboardPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
           {filteredApps.map((app) => (
             <AppCard
               key={app.id}
