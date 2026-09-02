@@ -2,8 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUserFromRequest } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
+import { validateImageDataUrl } from '@/lib/image-data-url';
 
 export const dynamic = 'force-dynamic';
+
+const MAX_LOGO_BYTES = 300 * 1024;
+
+function normalizeLogoUrl(logoUrl: unknown): string | null | undefined {
+  if (logoUrl === undefined) return undefined;
+  if (logoUrl === null || logoUrl === '') return null;
+  if (typeof logoUrl !== 'string') return undefined;
+  const validation = validateImageDataUrl(logoUrl, MAX_LOGO_BYTES);
+  if (!validation.ok) {
+    throw new Error(validation.message);
+  }
+  return logoUrl;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -85,6 +99,7 @@ export async function POST(request: NextRequest) {
       description,
       url,
       icon,
+      logoUrl,
       category,
       authType,
       openIn,
@@ -119,6 +134,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let normalizedLogo: string | null | undefined;
+    try {
+      normalizedLogo = normalizeLogoUrl(logoUrl);
+    } catch (err) {
+      return NextResponse.json(
+        { ok: false, message: err instanceof Error ? err.message : 'Logo no válido' },
+        { status: 400 }
+      );
+    }
+
     const newApp = await prisma.application.create({
       data: {
         code: cleanCode,
@@ -126,6 +151,7 @@ export async function POST(request: NextRequest) {
         description: description?.trim() || '',
         url: url.trim(),
         icon: icon?.trim() || 'Grid',
+        ...(normalizedLogo !== undefined && { logoUrl: normalizedLogo }),
         category: category?.trim() || 'Académica',
         authType: authType || 'GOOGLE_SESSION',
         openIn: openIn || '_blank',

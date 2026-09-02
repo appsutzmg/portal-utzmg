@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { DynamicIcon } from '@/components/DynamicIcon';
+import { ApplicationIcon } from '@/components/ApplicationIcon';
 import { ApplicationItem } from '@/components/AppCard';
 import { 
   Plus, 
@@ -19,7 +20,8 @@ import {
   ArrowUpDown,
   Search,
   Settings,
-  Sparkles
+  Sparkles,
+  ImagePlus,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -86,6 +88,9 @@ export default function AdminAppsPage() {
   const [formIsVisible, setFormIsVisible] = useState(true);
   const [formRoles, setFormRoles] = useState<string[]>([]);
   const [allCommunityAccess, setAllCommunityAccess] = useState(false);
+  const [formLogoUrl, setFormLogoUrl] = useState<string | null>(null);
+  const [logoMessage, setLogoMessage] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!authLoading && (!user || !user.isAdmin)) {
@@ -147,6 +152,8 @@ export default function AdminAppsPage() {
     setFormIsVisible(true);
     setFormRoles([]);
     setAllCommunityAccess(true);
+    setFormLogoUrl(null);
+    setLogoMessage(null);
     setIsModalOpen(true);
     setFeedbackMsg(null);
   };
@@ -168,6 +175,8 @@ export default function AdminAppsPage() {
     const roles = app.requiredRoles ? app.requiredRoles.split(',').map((r) => r.trim()).filter(Boolean) : [];
     setFormRoles(roles);
     setAllCommunityAccess(roles.length === 0);
+    setFormLogoUrl(app.logoUrl || null);
+    setLogoMessage(null);
     setIsModalOpen(true);
     setFeedbackMsg(null);
   };
@@ -188,6 +197,38 @@ export default function AdminAppsPage() {
     }
   };
 
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.match(/^image\/(jpeg|jpg|png|webp|svg\+xml)$/)) {
+      setLogoMessage('Formato no válido. Use JPG, PNG, WebP o SVG.');
+      return;
+    }
+
+    if (file.size > 300 * 1024) {
+      setLogoMessage('La imagen es muy grande. Máximo 300 KB.');
+      return;
+    }
+
+    setLogoMessage(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormLogoUrl(reader.result as string);
+    };
+    reader.onerror = () => {
+      setLogoMessage('No se pudo leer la imagen.');
+    };
+    reader.readAsDataURL(file);
+    if (logoInputRef.current) logoInputRef.current.value = '';
+  };
+
+  const handleRemoveLogo = () => {
+    setFormLogoUrl(null);
+    setLogoMessage(null);
+    if (logoInputRef.current) logoInputRef.current.value = '';
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formName || !formCode || !formUrl) {
@@ -204,6 +245,7 @@ export default function AdminAppsPage() {
       description: formDescription,
       url: formUrl,
       icon: formIcon,
+      logoUrl: formLogoUrl,
       category: formCategory,
       authType: formAuthType,
       openIn: formOpenIn,
@@ -347,9 +389,13 @@ export default function AdminAppsPage() {
                     {/* App info */}
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-utzmg-green flex items-center justify-center shrink-0 border border-emerald-100">
-                          <DynamicIcon name={app.icon} className="w-5 h-5" />
-                        </div>
+                        <ApplicationIcon
+                          icon={app.icon}
+                          logoUrl={app.logoUrl}
+                          className="w-10 h-10 rounded-xl shrink-0"
+                          imgClassName="w-full h-full object-contain p-0.5"
+                          fallbackClassName="w-10 h-10 rounded-xl bg-emerald-50 text-utzmg-green flex items-center justify-center shrink-0 border border-emerald-100"
+                        />
                         <div className="max-w-xs">
                           <p className="font-bold text-gray-900 leading-tight truncate">{app.name}</p>
                           <p className="text-xs text-gray-400 font-mono mt-0.5">{app.code}</p>
@@ -570,10 +616,61 @@ export default function AdminAppsPage() {
                   />
                 </div>
 
+                {/* Logo de la aplicación */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                    Logo de la aplicación
+                  </label>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                    <ApplicationIcon
+                      icon={formIcon}
+                      logoUrl={formLogoUrl}
+                      className="w-16 h-16 rounded-2xl shrink-0 mx-auto sm:mx-0"
+                      imgClassName="w-full h-full object-contain p-1"
+                      fallbackClassName="w-16 h-16 rounded-2xl bg-gradient-to-br from-utzmg-green to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md"
+                    />
+                    <div className="flex-1 space-y-2">
+                      <p className="text-[11px] text-gray-500 leading-relaxed">
+                        Se muestra en la tarjeta del dashboard. Si no subes logo, se usa el icono seleccionado abajo.
+                        JPG, PNG, WebP o SVG — máx. 300 KB.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => logoInputRef.current?.click()}
+                          className="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 bg-white hover:bg-gray-50 flex items-center space-x-1.5"
+                        >
+                          <ImagePlus className="w-4 h-4" />
+                          <span>{formLogoUrl ? 'Cambiar logo' : 'Subir logo'}</span>
+                        </button>
+                        {formLogoUrl && (
+                          <button
+                            type="button"
+                            onClick={handleRemoveLogo}
+                            className="px-3 py-2 text-xs font-semibold rounded-xl border border-red-200 text-red-600 bg-red-50 hover:bg-red-100"
+                          >
+                            Quitar logo
+                          </button>
+                        )}
+                      </div>
+                      {logoMessage && (
+                        <p className="text-[11px] text-red-600">{logoMessage}</p>
+                      )}
+                      <input
+                        ref={logoInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                        className="hidden"
+                        onChange={handleLogoFileChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Icon Selector */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-gray-700 mb-2">
-                    Icono Representativo
+                    Icono de respaldo
                   </label>
                   <div className="grid grid-cols-6 sm:grid-cols-9 gap-2 p-3 bg-gray-50 rounded-2xl border border-gray-200">
                     {AVAILABLE_ICONS.map((iconName) => (

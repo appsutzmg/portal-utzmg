@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DynamicIcon } from './DynamicIcon';
+import { ApplicationIcon } from './ApplicationIcon';
 import { ExternalLink, ArrowRight, Shield, AlertTriangle, CheckCircle2, Lock } from 'lucide-react';
 
 export interface ApplicationItem {
@@ -11,6 +11,7 @@ export interface ApplicationItem {
   description: string;
   url: string;
   icon: string;
+  logoUrl?: string | null;
   category: string;
   authType: string;
   openIn: string;
@@ -130,9 +131,11 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
 
         {/* Icon & Title */}
         <div className="flex items-start space-x-4 mb-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-utzmg-green to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform">
-            <DynamicIcon name={app.icon} className="w-6 h-6" />
-          </div>
+          <ApplicationIcon
+            icon={app.icon}
+            logoUrl={app.logoUrl}
+            fallbackClassName="w-12 h-12 rounded-xl bg-gradient-to-br from-utzmg-green to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform"
+          />
           <div>
             <h3 className="font-bold text-gray-900 text-lg leading-snug group-hover:text-utzmg-green transition-colors">
               {app.name}

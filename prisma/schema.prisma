@@ -55,7 +55,8 @@ model Application {
   name          String
   description   String
   url           String
-  icon          String   // Lucide icon name, e.g. 'Users', 'FolderKanban', 'GraduationCap', 'BookOpen', 'Building2', etc.
+  icon          String   // Lucide icon name (fallback si no hay logoUrl)
+  logoUrl       String?  // Logo personalizado (base64 data URL)
   category      String   // 'Académica', 'Gestión', 'Servicios', 'Administración'
   authType      String   @default("GOOGLE_SESSION") // 'GOOGLE_SESSION', 'SSO_JWT_TOKEN', 'DIRECT_LINK', 'OIDC_FEDERATED'
   openIn        String   @default("_blank") // '_blank', '_self'
