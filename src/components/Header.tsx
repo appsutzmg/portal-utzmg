@@ -306,6 +306,19 @@ export const Header: React.FC = () => {
                     )}
                   </div>
 
+                  <div className="py-1 border-b border-gray-100 dark:border-gray-800">
+                    <p className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                      Acceso
+                    </p>
+                    <Link
+                      href="/solicitar-acceso"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      Solicitar acceso a una aplicación
+                    </Link>
+                  </div>
+
                   {user.isAdmin && (
                     <div className="py-1 border-b border-gray-100 dark:border-gray-800">
                       <p className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">

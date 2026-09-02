@@ -11,6 +11,10 @@ import {
   PORTAL_ROLES,
 } from '@/lib/app-request-template';
 import {
+  buildNewAppRequestMailto,
+  PORTAL_ADMIN_EMAIL,
+} from '@/lib/mailto-requests';
+import {
   ArrowLeft,
   Check,
   ClipboardCopy,
@@ -73,23 +77,32 @@ export default function SolicitudAppPage() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white shadow-sm transition-all"
-        >
-          {copied ? (
-            <>
-              <Check className="w-4 h-4" />
-              Copiado
-            </>
-          ) : (
-            <>
-              <ClipboardCopy className="w-4 h-4" />
-              Copiar plantilla de correo
-            </>
-          )}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+          <a
+            href={buildNewAppRequestMailto()}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white shadow-sm transition-all"
+          >
+            <Mail className="w-4 h-4" />
+            Enviar a {PORTAL_ADMIN_EMAIL}
+          </a>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-all"
+          >
+            {copied ? (
+              <>
+                <Check className="w-4 h-4" />
+                Copiado
+              </>
+            ) : (
+              <>
+                <ClipboardCopy className="w-4 h-4" />
+                Copiar plantilla
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mínimo indispensable */}
@@ -216,10 +229,13 @@ export default function SolicitudAppPage() {
           {APP_REQUEST_EMAIL_TEMPLATE}
         </pre>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-          Destino sugerido:{' '}
-          <a href="mailto:apps@utzmg.edu.mx" className="text-utzmg-green font-semibold hover:underline">
-            apps@utzmg.edu.mx
-          </a>
+          Destino:{' '}
+          <span className="text-utzmg-green font-semibold">{PORTAL_ADMIN_EMAIL}</span>
+          . Los usuarios envían desde{' '}
+          <Link href="/solicitar-acceso" className="text-utzmg-green font-semibold hover:underline">
+            Solicitar acceso
+          </Link>{' '}
+          y el portal entrega el correo directamente.
         </p>
       </section>
 

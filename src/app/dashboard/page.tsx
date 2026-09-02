@@ -11,8 +11,10 @@ import {
   LayoutGrid,
   PlusCircle,
   Info,
+  Mail,
 } from 'lucide-react';
 import Link from 'next/link';
+import { PORTAL_ADMIN_EMAIL } from '@/lib/access-request-messages';
 
 export default function DashboardPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -219,6 +221,15 @@ export default function DashboardPage() {
               ? `No hay aplicaciones que coincidan con "${searchQuery}". Intenta con otros términos.`
               : 'No cuentas con aplicaciones asignadas a tu rol actual o la categoría seleccionada no tiene elementos.'}
           </p>
+          {!searchQuery && (
+            <Link
+              href="/solicitar-acceso"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-utzmg-green hover:bg-utzmg-darkgreen rounded-xl transition-colors"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              Solicitar acceso por correo
+            </Link>
+          )}
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
@@ -245,7 +256,13 @@ export default function DashboardPage() {
       <div className="mt-12 p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 flex items-start space-x-3 text-xs text-gray-600 dark:text-gray-400">
         <Info className="w-4 h-4 text-utzmg-green shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <span className="font-semibold text-gray-800 dark:text-gray-200">Nota Institucional:</span> Las aplicaciones mostradas se encuentran vinculadas a tu cuenta institucional. Si necesitas acceso a una aplicación adicional o cambio de rol, escribe a <a href="mailto:apps@utzmg.edu.mx" className="text-utzmg-green font-semibold underline hover:text-utzmg-darkgreen">apps@utzmg.edu.mx</a>.
+          <span className="font-semibold text-gray-800 dark:text-gray-200">Nota Institucional:</span>{' '}
+          Las aplicaciones mostradas están vinculadas a tu cuenta institucional.{' '}
+          <Link href="/solicitar-acceso" className="text-utzmg-green font-semibold underline hover:text-utzmg-darkgreen dark:hover:text-emerald-400">
+            Solicita acceso
+          </Link>{' '}
+          a otra aplicación; el portal envía el correo directamente a{' '}
+          <span className="font-semibold text-gray-800 dark:text-gray-200">{PORTAL_ADMIN_EMAIL}</span>.
         </div>
       </div>
 

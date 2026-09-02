@@ -30,8 +30,27 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const adminView = searchParams.get('adminView') === 'true' && user.isAdmin;
+    const accessCatalog = searchParams.get('accessCatalog') === 'true';
     const category = searchParams.get('category');
     const search = searchParams.get('search')?.toLowerCase();
+
+    // Catálogo completo con indicador de acceso (solicitudes de permiso)
+    if (accessCatalog) {
+      const catalogApps = await prisma.application.findMany({
+        where: {
+          isVisible: true,
+          status: { not: 'INACTIVE' },
+        },
+        orderBy: { orderIndex: 'asc' },
+      });
+
+      const applications = catalogApps.map((app) => ({
+        ...app,
+        canAccess: canUserAccessApplication(user, { requiredRoles: app.requiredRoles }),
+      }));
+
+      return NextResponse.json({ ok: true, applications });
+    }
 
     // Si es vista admin, obtiene todo
     if (adminView) {
