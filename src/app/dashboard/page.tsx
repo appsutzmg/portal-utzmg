@@ -5,17 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getFirstName } from '@/lib/user-profile';
 import { AppCard, ApplicationItem } from '@/components/AppCard';
-import { 
-  Search, 
-  LayoutGrid, 
-  Sparkles, 
-  PlusCircle, 
-  Filter, 
-  SlidersHorizontal, 
-  GraduationCap, 
-  ShieldCheck, 
-  ExternalLink,
-  Info
+import { UserAvatar } from '@/components/UserAvatar';
+import {
+  Search,
+  LayoutGrid,
+  PlusCircle,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -99,38 +94,49 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
-      {/* Institutional Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-utzmg-gradient text-white p-8 sm:p-10 mb-8 shadow-utzmg">
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold mb-4 text-emerald-50">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Portal Institucional UTZMG</span>
+      {/* Banner compacto institucional */}
+      <div className="relative mb-6 overflow-hidden rounded-2xl border border-emerald-100/80 bg-white shadow-sm">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(0,104,55,0.08)_0%,_transparent_55%),linear-gradient(135deg,#f0fdf4_0%,#ffffff_45%,#f8fafc_100%)]" />
+        <div className="absolute -right-6 -top-10 h-28 w-28 rounded-full bg-utzmg-green/10 blur-2xl" />
+        <div className="absolute -bottom-8 left-1/3 h-24 w-24 rounded-full bg-emerald-200/20 blur-2xl" />
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-utzmg-gradient" />
+
+        <div className="relative flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <UserAvatar
+              name={user.name}
+              avatarUrl={user.avatarUrl}
+              size="lg"
+              className="ring-2 ring-white shadow-md shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-utzmg-green">
+                Portal Institucional UTZMG
+              </p>
+              <h1 className="truncate text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl">
+                Hola, {getFirstName(user.name)}
+              </h1>
+              <p className="mt-0.5 text-xs text-gray-500 sm:text-sm">
+                {filteredApps.length}{' '}
+                {filteredApps.length === 1 ? 'aplicación disponible' : 'aplicaciones disponibles'}{' '}
+                para tu perfil
+              </p>
+            </div>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Hola, {getFirstName(user.name)}
-          </h1>
-
-          <p className="mt-2 text-emerald-100 text-sm sm:text-base leading-relaxed">
-            Bienvenido al portal centralizado de aplicaciones y servicios de la Universidad Tecnológica de la Zona Metropolitana de Guadalajara.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-2 mt-4">
-            <span className="text-xs text-emerald-200">Perfiles activos:</span>
-            {user.roles.map((r) => (
+          <div className="flex flex-wrap items-center gap-1.5 sm:justify-end sm:max-w-[50%]">
+            <span className="mr-1 hidden text-[10px] font-semibold uppercase tracking-wide text-gray-400 sm:inline">
+              Perfiles
+            </span>
+            {(user.roleLabels?.length ? user.roleLabels : user.roles).map((label) => (
               <span
-                key={r}
-                className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 text-white backdrop-blur-sm uppercase tracking-wider"
+                key={label}
+                className="rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-utzmg-darkgreen"
               >
-                {r}
+                {label}
               </span>
             ))}
           </div>
-        </div>
-
-        {/* Decorative Background Element */}
-        <div className="absolute right-0 bottom-0 translate-x-12 translate-y-12 opacity-10 pointer-events-none hidden lg:block">
-          <div className="w-96 h-96 rounded-full border-8 border-white" />
         </div>
       </div>
 
