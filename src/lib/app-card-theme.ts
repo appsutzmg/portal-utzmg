@@ -1,4 +1,4 @@
-/** Colores por aplicación — valores hex para marco, botón e icono (no dependen de Tailwind purge). */
+/** Paleta institucional UTZMG — verde, gris y rojo en tonalidades suaves. */
 
 export interface AppCardTheme {
   id: string;
@@ -8,68 +8,45 @@ export interface AppCardTheme {
   accentDark: string;
   accentLight: string;
   title: string;
+  iconColor: string;
 }
 
 export const APP_CARD_THEMES: AppCardTheme[] = [
   {
-    id: 'forest',
-    label: 'Verde',
-    border: '#059669',
-    accent: '#059669',
-    accentDark: '#047857',
-    accentLight: '#ecfdf5',
-    title: '#065f46',
+    id: 'green',
+    label: 'Verde UTZMG',
+    border: '#7cb899',
+    accent: '#006837',
+    accentDark: '#004d28',
+    accentLight: '#E8F5E9',
+    title: '#004d28',
+    iconColor: '#006837',
   },
   {
-    id: 'ocean',
-    label: 'Azul',
-    border: '#4f46e5',
-    accent: '#4f46e5',
-    accentDark: '#4338ca',
-    accentLight: '#eef2ff',
-    title: '#3730a3',
+    id: 'gray',
+    label: 'Gris UTZMG',
+    border: '#cbd5e1',
+    accent: '#64748b',
+    accentDark: '#475569',
+    accentLight: '#f1f5f9',
+    title: '#334155',
+    iconColor: '#475569',
   },
   {
-    id: 'violet',
-    label: 'Violeta',
-    border: '#7c3aed',
-    accent: '#7c3aed',
-    accentDark: '#6d28d9',
-    accentLight: '#f5f3ff',
-    title: '#5b21b6',
-  },
-  {
-    id: 'amber',
-    label: 'Ámbar',
-    border: '#d97706',
-    accent: '#d97706',
-    accentDark: '#b45309',
-    accentLight: '#fffbeb',
-    title: '#92400e',
-  },
-  {
-    id: 'rose',
-    label: 'Rosa',
-    border: '#e11d48',
-    accent: '#e11d48',
-    accentDark: '#be123c',
-    accentLight: '#fff1f2',
-    title: '#9f1239',
-  },
-  {
-    id: 'cyan',
-    label: 'Cielo',
-    border: '#0284c7',
-    accent: '#0284c7',
-    accentDark: '#0369a1',
-    accentLight: '#f0f9ff',
-    title: '#075985',
+    id: 'red',
+    label: 'Rojo UTZMG',
+    border: '#e8a8a8',
+    accent: '#c53030',
+    accentDark: '#9b2c2c',
+    accentLight: '#fef2f2',
+    title: '#742a2a',
+    iconColor: '#c53030',
   },
 ];
 
 const KNOWN_APP_THEMES: Record<string, number> = {
-  'proyectos-integradores': 1, // azul
   tutorias: 0, // verde
+  'proyectos-integradores': 1, // gris
 };
 
 function hashCode(value: string): number {

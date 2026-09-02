@@ -36,11 +36,12 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
   const isMaintenance = app.status === 'MAINTENANCE';
   const isInactive = app.status === 'INACTIVE';
 
-  const frameColor = isMaintenance ? '#d97706' : isInactive ? '#9ca3af' : theme.border;
-  const accentColor = isMaintenance ? '#d97706' : isInactive ? '#6b7280' : theme.accent;
-  const accentDark = isMaintenance ? '#b45309' : isInactive ? '#4b5563' : theme.accentDark;
-  const accentLight = isMaintenance ? '#fffbeb' : isInactive ? '#f3f4f6' : theme.accentLight;
-  const titleColor = isMaintenance ? '#92400e' : isInactive ? '#374151' : theme.title;
+  const frameColor = isMaintenance ? '#d4a574' : isInactive ? '#cbd5e1' : theme.border;
+  const accentColor = isMaintenance ? '#b45309' : isInactive ? '#94a3b8' : theme.accent;
+  const accentDark = isMaintenance ? '#92400e' : isInactive ? '#64748b' : theme.accentDark;
+  const accentLight = isMaintenance ? '#fffbeb' : isInactive ? '#f8fafc' : theme.accentLight;
+  const titleColor = isMaintenance ? '#92400e' : isInactive ? '#475569' : theme.title;
+  const iconColor = isMaintenance ? '#b45309' : isInactive ? '#64748b' : theme.iconColor;
 
   const requiredRolesList = app.requiredRoles
     ? app.requiredRoles.split(',').map((r) => r.trim().toLowerCase())
@@ -85,13 +86,13 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
     <div
       className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg ${isInactive ? 'opacity-65' : ''}`}
       style={{
-        borderWidth: 3,
+        borderWidth: 2,
         borderStyle: 'solid',
         borderColor: frameColor,
       }}
     >
-      {/* Franja superior del color de la app */}
-      <div className="h-2 w-full shrink-0" style={{ backgroundColor: accentColor }} />
+      {/* Franja superior — tono suave institucional */}
+      <div className="h-1.5 w-full shrink-0" style={{ backgroundColor: accentColor }} />
 
       <div className="flex flex-1 flex-col p-5">
         {/* Encabezado: icono + badges */}
@@ -99,15 +100,17 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
           <ApplicationIcon
             icon={app.icon}
             logoUrl={app.logoUrl}
-            className="h-[72px] w-[72px] shrink-0 rounded-2xl shadow-md"
+            className="h-[72px] w-[72px] shrink-0 rounded-2xl"
             imgClassName="h-full w-full object-contain p-1.5"
             logoContainerStyle={{
               backgroundColor: '#ffffff',
               border: `2px solid ${frameColor}`,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
             }}
-            fallbackClassName="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-2xl shadow-md text-white"
-            fallbackStyle={{ backgroundColor: accentColor }}
-            iconClassName="h-9 w-9"
+            fallbackClassName="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-2xl"
+            fallbackStyle={{ backgroundColor: accentLight, border: `2px solid ${frameColor}` }}
+            iconClassName="h-10 w-10"
+            iconColor={iconColor}
           />
 
           <div className="min-w-0 flex-1 pt-0.5">
