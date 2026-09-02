@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUserFromRequest, createSSOLaunchToken } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
+import { canUserAccessApplication } from '@/lib/app-access';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,27 +32,23 @@ export async function POST(
       );
     }
 
-    // Verificar permiso por rol
-    if (!user.isAdmin && app.requiredRoles && app.requiredRoles.trim() !== '') {
-      const allowedRoles = app.requiredRoles.split(',').map((r) => r.trim().toLowerCase());
-      const hasPermission = user.roles.some((role) => allowedRoles.includes(role.toLowerCase()));
+    if (
+      !canUserAccessApplication(user, { requiredRoles: app.requiredRoles })
+    ) {
+      await logAuditEvent({
+        userId: user.id,
+        userEmail: user.email,
+        action: 'APP_ACCESS_DENIED',
+        targetResource: `app:${app.code}`,
+        details: { requiredRoles: app.requiredRoles, userRoles: user.roles },
+        ipAddress: request.headers.get('x-forwarded-for') || '127.0.0.1',
+        userAgent: request.headers.get('user-agent') || 'Browser',
+      });
 
-      if (!hasPermission) {
-        await logAuditEvent({
-          userId: user.id,
-          userEmail: user.email,
-          action: 'APP_ACCESS_DENIED',
-          targetResource: `app:${app.code}`,
-          details: { requiredRoles: app.requiredRoles, userRoles: user.roles },
-          ipAddress: request.headers.get('x-forwarded-for') || '127.0.0.1',
-          userAgent: request.headers.get('user-agent') || 'Browser',
-        });
-
-        return NextResponse.json(
-          { ok: false, message: 'No cuenta con los roles necesarios para acceder a esta aplicación.' },
-          { status: 403 }
-        );
-      }
+      return NextResponse.json(
+        { ok: false, message: 'No cuenta con los roles necesarios para acceder a esta aplicación.' },
+        { status: 403 }
+      );
     }
 
     // Registrar en auditoría el lanzamiento de la app

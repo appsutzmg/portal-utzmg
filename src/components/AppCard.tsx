@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ApplicationIcon } from './ApplicationIcon';
 import { ExternalLink, ArrowRight, Shield, AlertTriangle, CheckCircle2, Lock } from 'lucide-react';
 import { getAppCardTheme } from '@/lib/app-card-theme';
+import { canUserAccessApplication, parseRequiredRoles } from '@/lib/app-access';
 
 export interface ApplicationItem {
   id: string;
@@ -43,14 +44,12 @@ export const AppCard: React.FC<AppCardProps> = ({ app, userRoles = [], isAdmin =
   const titleColor = isMaintenance ? '#92400e' : isInactive ? '#475569' : theme.title;
   const iconColor = isMaintenance ? '#b45309' : isInactive ? '#64748b' : theme.iconColor;
 
-  const requiredRolesList = app.requiredRoles
-    ? app.requiredRoles.split(',').map((r) => r.trim().toLowerCase())
-    : [];
+  const requiredRolesList = parseRequiredRoles(app.requiredRoles);
 
-  const hasRoleAccess =
-    isAdmin ||
-    requiredRolesList.length === 0 ||
-    userRoles.some((r) => requiredRolesList.includes(r.toLowerCase()));
+  const hasRoleAccess = canUserAccessApplication(
+    { roles: userRoles, isAdmin },
+    { requiredRoles: app.requiredRoles }
+  );
 
   const handleLaunch = async () => {
     if (isMaintenance && !isAdmin) {

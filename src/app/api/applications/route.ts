@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { getCurrentUserFromRequest } from '@/lib/auth';
 import { logAuditEvent } from '@/lib/audit';
 import { validateImageDataUrl } from '@/lib/image-data-url';
+import { canUserAccessApplication } from '@/lib/app-access';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,19 +51,9 @@ export async function GET(request: NextRequest) {
       orderBy: { orderIndex: 'asc' },
     });
 
-    // Filtrar en memoria por la lista de roles del usuario
-    const userRoleSet = new Set(user.roles);
-    const authorizedApps = allApps.filter((app) => {
-      // Si el usuario es admin, ve todas las aplicaciones activas/mantenimiento
-      if (user.isAdmin) return true;
-
-      // Si no tiene requiredRoles o está vacío, está disponible para todos
-      if (!app.requiredRoles || app.requiredRoles.trim() === '') return true;
-
-      // Dividir roles requeridos y verificar si el usuario tiene al menos uno
-      const required = app.requiredRoles.split(',').map((r) => r.trim().toLowerCase());
-      return required.some((role) => userRoleSet.has(role));
-    });
+    const authorizedApps = allApps.filter((app) =>
+      canUserAccessApplication(user, { requiredRoles: app.requiredRoles })
+    );
 
     // Filtro adicional de búsqueda de texto si aplica
     const filteredApps = search
