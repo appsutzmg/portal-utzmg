@@ -134,12 +134,12 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 | :--- | :--- | :---: | :---: | :---: |
 | **Administrador** | `admin` | ✅ | ✅ | ✅ |
 | **Profesor / Docente** | `profesor` | ❌ | ✅ | ❌ |
-| **Encargado de Proyectos** | `coordinador_proyectos` | ✅ | ❌* | ❌ |
+| **Coordinador de Proyectos** | `coordinador_proyectos` | ✅ | ❌* | ❌ |
 | **Asistente** | `asistente` | ✅ | ❌ | ❌ |
 | **Tutor** | `tutor` | ❌ | ✅ | ❌ |
 | **Dirección Académica** | `direccion_academica` | ❌ | ✅ | ❌ |
 
-\* Un encargado que también es docente debe tener **`profesor` + `coordinador_proyectos`** para ver Proyectos y Tutorías.
+\* Un coordinador que también es docente debe tener **`profesor` + `coordinador_proyectos`** para ver Proyectos y Tutorías.
 
 ---
 

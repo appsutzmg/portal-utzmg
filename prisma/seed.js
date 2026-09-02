@@ -14,8 +14,8 @@ const rolesData = [
   },
   {
     name: 'coordinador_proyectos',
-    displayName: 'Encargado de Proyectos',
-    description: 'Gestión y evaluación de proyectos integradores (requiere este rol además de profesor si también es docente)',
+    displayName: 'Coordinador de Proyectos',
+    description: 'Coordinación y gestión de proyectos integradores',
   },
   {
     name: 'asistente',
