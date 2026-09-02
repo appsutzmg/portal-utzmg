@@ -90,27 +90,39 @@ async function main() {
   }
   console.log('✅ Roles institucionales verificados');
 
+  const syncApps = process.env.SEED_SYNC_APPS === 'true';
   for (const app of applicationsData) {
-    await prisma.application.upsert({
-      where: { code: app.code },
-      update: {
-        name: app.name,
-        description: app.description,
-        url: app.url,
-        icon: app.icon,
-        category: app.category,
-        authType: app.authType,
-        openIn: app.openIn,
-        orderIndex: app.orderIndex,
-        status: app.status,
-        isVisible: app.isVisible,
-        requiredRoles: app.requiredRoles,
-        // logoUrl: no se toca — conserva logos subidos desde administración
-      },
-      create: app,
-    });
+    if (syncApps) {
+      await prisma.application.upsert({
+        where: { code: app.code },
+        update: {
+          name: app.name,
+          description: app.description,
+          url: app.url,
+          icon: app.icon,
+          category: app.category,
+          authType: app.authType,
+          openIn: app.openIn,
+          orderIndex: app.orderIndex,
+          status: app.status,
+          isVisible: app.isVisible,
+          requiredRoles: app.requiredRoles,
+        },
+        create: app,
+      });
+    } else {
+      await prisma.application.upsert({
+        where: { code: app.code },
+        update: {},
+        create: app,
+      });
+    }
   }
-  console.log('✅ Aplicaciones institucionales verificadas (logos y cambios del admin se conservan)');
+  console.log(
+    syncApps
+      ? '✅ Aplicaciones sincronizadas desde seed (SEED_SYNC_APPS=true)'
+      : '✅ Aplicaciones verificadas (solo crea faltantes; no modifica las existentes)'
+  );
 
   const adminEmail = 'apps@utzmg.edu.mx';
   const adminUser = await prisma.user.upsert({

@@ -180,9 +180,15 @@ El portal usa **MongoDB Atlas** (plan M0 gratuito). Los datos persisten fuera de
 Antes, `npm run db:seed` **borraba todo** el catálogo y usuarios. Ahora el seed es **seguro**:
 
 - No elimina datos existentes.
-- Solo crea o actualiza roles y apps base.
-- **No sobrescribe `logoUrl`** (conserva logos subidos).
+- Solo crea roles y apps base **si no existen**.
+- **No sobrescribe** apps ya registradas (descripción, nombre, URL, roles, logo, etc.).
 - No borra usuarios que hayas dado de alta.
+
+Para forzar sincronización de apps desde el seed (solo desarrollo):
+
+```bash
+SEED_SYNC_APPS=true npm run db:seed
+```
 
 Solo borra todo si ejecutas explícitamente (solo desarrollo):
 
