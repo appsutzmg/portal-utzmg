@@ -8,9 +8,11 @@ interface ApplicationIconProps {
   imgClassName?: string;
   fallbackClassName?: string;
   iconClassName?: string;
+  logoContainerStyle?: React.CSSProperties;
+  fallbackStyle?: React.CSSProperties;
 }
 
-/** Muestra el logo de la app si existe; si no, el icono Lucide. */
+/** Muestra el logo de la app si existe; si no, el icono Lucide sobre fondo de color. */
 export function ApplicationIcon({
   icon,
   logoUrl,
@@ -18,11 +20,14 @@ export function ApplicationIcon({
   imgClassName = 'w-full h-full object-contain p-1',
   fallbackClassName = 'w-12 h-12 rounded-xl bg-gradient-to-br from-utzmg-green to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md',
   iconClassName = 'w-6 h-6',
+  logoContainerStyle,
+  fallbackStyle,
 }: ApplicationIconProps) {
   if (logoUrl) {
     return (
       <div
-        className={`${className} bg-white border border-gray-100 shadow-sm overflow-hidden flex items-center justify-center`}
+        className={`${className} overflow-hidden flex items-center justify-center`}
+        style={logoContainerStyle}
       >
         <img src={logoUrl} alt="" className={imgClassName} />
       </div>
@@ -30,7 +35,7 @@ export function ApplicationIcon({
   }
 
   return (
-    <div className={fallbackClassName}>
+    <div className={fallbackClassName} style={fallbackStyle}>
       <DynamicIcon name={icon} className={iconClassName} />
     </div>
   );
