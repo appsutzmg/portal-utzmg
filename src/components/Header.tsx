@@ -2,19 +2,13 @@
 
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserAvatar } from '@/components/UserAvatar';
 import { getUserSubtitle } from '@/lib/user-profile';
 import { 
   LogOut, 
-  ShieldCheck, 
-  LayoutGrid, 
-  ChevronDown, 
   Sparkles,
-  Layers,
-  History,
-  Users,
+  ChevronDown, 
   Camera,
   Trash2,
   Loader2,
@@ -23,7 +17,6 @@ import {
 
 export const Header: React.FC = () => {
   const { user, logout, demoUsers, login, updateAvatar, removeAvatar, updateName } = useAuth();
-  const pathname = usePathname();
   const [showDemoDropdown, setShowDemoDropdown] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
@@ -123,73 +116,6 @@ export const Header: React.FC = () => {
                 </p>
               </div>
             </Link>
-
-            {/* Navegación — solo administradores (varias secciones); el resto usa el dashboard como inicio */}
-            {user.isAdmin && (
-            <nav className="hidden md:flex space-x-1 pl-6">
-              <Link
-                href="/dashboard"
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
-                  pathname === '/dashboard'
-                    ? 'bg-utzmg-mint text-utzmg-darkgreen'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-                <span>Aplicaciones</span>
-              </Link>
-
-              <div className="flex space-x-1">
-                  <Link
-                    href="/admin/apps"
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
-                      pathname.startsWith('/admin/apps')
-                        ? 'bg-utzmg-mint text-utzmg-darkgreen'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    <Layers className="w-4 h-4 text-utzmg-green" />
-                    <span>Gestión de Apps</span>
-                  </Link>
-
-                  <Link
-                    href="/admin/users"
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
-                      pathname.startsWith('/admin/users')
-                        ? 'bg-utzmg-mint text-utzmg-darkgreen'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    <Users className="w-4 h-4 text-utzmg-green" />
-                    <span>Usuarios</span>
-                  </Link>
-
-                  <Link
-                    href="/admin/roles"
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
-                      pathname.startsWith('/admin/roles')
-                        ? 'bg-utzmg-mint text-utzmg-darkgreen'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    <ShieldCheck className="w-4 h-4 text-utzmg-green" />
-                    <span>Roles</span>
-                  </Link>
-
-                  <Link
-                    href="/admin/audit"
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2 ${
-                      pathname.startsWith('/admin/audit')
-                        ? 'bg-utzmg-mint text-utzmg-darkgreen'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    <History className="w-4 h-4 text-utzmg-green" />
-                    <span>Auditoría</span>
-                  </Link>
-              </div>
-            </nav>
-            )}
           </div>
 
           {/* Right side: User Profile & Demo Switcher */}
@@ -379,7 +305,10 @@ export const Header: React.FC = () => {
                   </div>
 
                   {user.isAdmin && (
-                    <div className="py-1 border-b border-gray-100 md:hidden">
+                    <div className="py-1 border-b border-gray-100">
+                      <p className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                        Administración
+                      </p>
                       <Link
                         href="/admin/apps"
                         onClick={() => setShowUserMenu(false)}
