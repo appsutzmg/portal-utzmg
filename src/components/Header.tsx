@@ -312,6 +312,13 @@ export const Header: React.FC = () => {
                         Administración
                       </p>
                       <Link
+                        href="/admin/solicitud-app"
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      >
+                        Guía: solicitar nueva app
+                      </Link>
+                      <Link
                         href="/admin/apps"
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"

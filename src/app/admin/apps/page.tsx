@@ -22,6 +22,7 @@ import {
   Settings,
   Sparkles,
   ImagePlus,
+  FileText,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -313,13 +314,22 @@ export default function AdminAppsPage() {
           </p>
         </div>
 
-        <button
-          onClick={openCreateModal}
-          className="px-4 py-2.5 bg-utzmg-green hover:bg-utzmg-darkgreen text-white rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-sm hover:shadow transition-all"
-        >
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+          <Link
+            href="/admin/solicitud-app"
+            className="px-4 py-2.5 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-utzmg-darkgreen dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-xl text-sm font-bold flex items-center justify-center space-x-2 transition-all"
+          >
+            <FileText className="w-4 h-4" />
+            <span>Guía de solicitud</span>
+          </Link>
+          <button
+            onClick={openCreateModal}
+            className="px-4 py-2.5 bg-utzmg-green hover:bg-utzmg-darkgreen text-white rounded-xl text-sm font-bold flex items-center justify-center space-x-2 shadow-sm hover:shadow transition-all"
+          >
           <Plus className="w-4 h-4" />
           <span>Registrar Nueva Aplicación</span>
         </button>
+        </div>
       </div>
 
       {/* Filter and Search */}
