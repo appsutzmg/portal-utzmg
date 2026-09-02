@@ -84,9 +84,22 @@ Portal-utzmg/
 npm install
 ```
 
-### 2. Configurar variables de entorno (`.env`)
+### 2. Base de datos PostgreSQL (local)
+
+Con Docker (recomendado):
+
+```bash
+npm run db:up
+```
+
+Esto levanta PostgreSQL en `localhost:5432` (usuario/contraseña/base: `portal` / `portal` / `portal_utzmg`).
+
+### 3. Configurar variables de entorno (`.env`)
+
+Copia `.env.example` a `.env` y ajusta si hace falta:
+
 ```env
-DATABASE_URL="file:./dev.db" # O PostgreSQL en producción
+DATABASE_URL="postgresql://portal:portal@localhost:5432/portal_utzmg"
 JWT_SECRET="clave-secreta-institucional-utzmg"
 INSTITUTIONAL_DOMAIN="utzmg.edu.mx"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
@@ -95,13 +108,13 @@ ALLOW_EMAIL_ONLY_LOGIN="true"
 NEXT_PUBLIC_ALLOW_EMAIL_ONLY_LOGIN="true"
 ```
 
-### 3. Crear base de datos y cargar datos iniciales
+### 4. Crear tablas y cargar datos iniciales
 ```bash
 npx prisma db push
 npm run db:seed
 ```
 
-### 4. Iniciar servidor de desarrollo
+### 5. Iniciar servidor de desarrollo
 ```bash
 npm run dev
 ```
@@ -135,23 +148,25 @@ Abre en tu navegador: [http://localhost:3000](http://localhost:3000)
 
 ## 💾 Persistencia de datos (logos, usuarios, roles)
 
-Si los **logos**, **usuarios** o **roles** desaparecen tras un redeploy en Render, casi siempre es por una de estas causas:
+El portal usa **PostgreSQL** (local con Docker, producción en Render). Los datos **no deben perderse** en redeploys si `DATABASE_URL` apunta a un servicio Postgres persistente.
 
-### 1. Base de datos SQLite en Render (causa principal)
+### Migrar producción en Render (checklist)
 
-Si `DATABASE_URL` es `file:./dev.db`, la base vive **dentro del contenedor**. Cada **redeploy o reinicio** borra ese archivo y el portal arranca vacío.
-
-**Solución:** usar **PostgreSQL persistente** en Render:
-
-1. En Render → **New → PostgreSQL** (puede ser el plan gratuito de 90 días o el de pago).
+1. **New → PostgreSQL** en Render (plan gratuito 90 días o de pago).
 2. Copia la **Internal Database URL** del servicio PostgreSQL.
-3. En el servicio **portal-utzmg** → **Environment** → `DATABASE_URL` = esa URL (debe empezar con `postgresql://`).
-4. Cambia en `prisma/schema.prisma` la línea `provider = "sqlite"` por `provider = "postgresql"`.
-5. Redeploy del portal (el build ejecuta `prisma db push` y crea las tablas en Postgres).
+3. En **portal-utzmg → Environment** → `DATABASE_URL` = esa URL (`postgresql://...`).
+4. **Manual Deploy** del portal (el build ejecuta `prisma db push` y crea las tablas).
+5. Una sola vez, carga datos base (roles, apps, admin):
+   ```bash
+   # Desde tu máquina, con DATABASE_URL apuntando a Render (External URL + SSL):
+   npm run db:seed
+   ```
+   O entra como admin y configura apps/usuarios desde el panel.
+6. Vuelve a subir logos y usuarios que tenías antes (la base nueva empieza vacía).
 
-A partir de ahí, logos, usuarios y roles **sobreviven** a los redeploys.
+> **No uses** `file:./dev.db` en Render — el disco del contenedor es efímero y borra todo en cada redeploy.
 
-### 2. Script de seed destructivo (corregido)
+### Script de seed (seguro)
 
 Antes, `npm run db:seed` **borraba todo** el catálogo y usuarios. Ahora el seed es **seguro**:
 
