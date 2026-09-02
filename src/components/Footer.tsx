@@ -6,9 +6,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-xs text-gray-500">
           <div className="flex items-center space-x-2">
-            <span className="font-semibold text-gray-700">Universidad Tecnológica de la Zona Metropolitana de Guadalajara</span>
-            <span>•</span>
-            <span>Portal Institucional v1.0</span>
+            <span className="font-medium text-gray-500">v1.0</span>
           </div>
           <div className="flex items-center space-x-6">
             <a 
