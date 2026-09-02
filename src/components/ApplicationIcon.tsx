@@ -7,6 +7,7 @@ interface ApplicationIconProps {
   className?: string;
   imgClassName?: string;
   fallbackClassName?: string;
+  iconClassName?: string;
 }
 
 /** Muestra el logo de la app si existe; si no, el icono Lucide. */
@@ -16,6 +17,7 @@ export function ApplicationIcon({
   className = 'w-12 h-12 rounded-xl shrink-0',
   imgClassName = 'w-full h-full object-contain p-1',
   fallbackClassName = 'w-12 h-12 rounded-xl bg-gradient-to-br from-utzmg-green to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md',
+  iconClassName = 'w-6 h-6',
 }: ApplicationIconProps) {
   if (logoUrl) {
     return (
@@ -29,7 +31,7 @@ export function ApplicationIcon({
 
   return (
     <div className={fallbackClassName}>
-      <DynamicIcon name={icon} className="w-6 h-6" />
+      <DynamicIcon name={icon} className={iconClassName} />
     </div>
   );
 }
