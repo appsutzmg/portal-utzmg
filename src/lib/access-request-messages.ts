@@ -98,9 +98,68 @@ Gracias.`;
   };
 }
 
-export function buildNewAppRequestMessage(): { subject: string; body: string } {
+export interface NewAppRequestForm {
+  appName: string;
+  appCode?: string;
+  appUrl: string;
+  description: string;
+  category: string;
+  visibility: string;
+  visibilityRoles?: string;
+  authType: string;
+  ssoUrl?: string;
+  responsible: string;
+  department?: string;
+  supportEmail?: string;
+  desiredDate?: string;
+  comment?: string;
+}
+
+export function buildNewAppRequestMessage(
+  params?: NewAppRequestForm & {
+    userName?: string;
+    userEmail?: string;
+  }
+): { subject: string; body: string } {
+  if (!params?.appName?.trim()) {
+    return {
+      subject: NEW_APP_REQUEST_SUBJECT,
+      body: NEW_APP_REQUEST_BODY,
+    };
+  }
+
+  const body = `Solicitud de alta en Portal UTZMG — Nueva aplicación
+
+Datos del solicitante:
+- Nombre: ${params.userName || '(no indicado)'}
+- Correo: ${params.userEmail || '(no indicado)'}
+
+1. Nombre de la aplicación: ${params.appName.trim()}
+2. Código sugerido (slug): ${params.appCode?.trim() || '(por definir)'}
+3. URL de la aplicación: ${params.appUrl.trim()}
+4. Descripción:
+${params.description.trim()}
+
+5. Categoría: ${params.category}
+6. Visibilidad en el portal: ${params.visibility}${
+    params.visibilityRoles?.trim()
+      ? `\n   Roles específicos: ${params.visibilityRoles.trim()}`
+      : ''
+  }
+7. Tipo de acceso: ${params.authType}
+8. URL técnica para SSO: ${params.ssoUrl?.trim() || '(no aplica / por definir)'}
+9. Responsable: ${params.responsible.trim()}
+10. Área o departamento: ${params.department?.trim() || '(no indicado)'}
+11. Correo de soporte: ${params.supportEmail?.trim() || '(no indicado)'}
+12. Fecha deseada de publicación: ${params.desiredDate?.trim() || '(no indicada)'}
+
+Comentarios adicionales:
+${params.comment?.trim() || '(ninguno)'}
+
+Gracias.`;
+
   return {
-    subject: NEW_APP_REQUEST_SUBJECT,
-    body: NEW_APP_REQUEST_BODY,
+    subject: `${NEW_APP_REQUEST_SUBJECT} — ${params.appName.trim()}`,
+    body,
   };
 }

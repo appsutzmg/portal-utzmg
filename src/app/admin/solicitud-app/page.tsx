@@ -10,10 +10,7 @@ import {
   AUTH_TYPE_OPTIONS,
   PORTAL_ROLES,
 } from '@/lib/app-request-template';
-import {
-  buildNewAppRequestMailto,
-  PORTAL_ADMIN_EMAIL,
-} from '@/lib/mailto-requests';
+import { PORTAL_ADMIN_EMAIL } from '@/lib/mailto-requests';
 import {
   ArrowLeft,
   Check,
@@ -78,13 +75,13 @@ export default function SolicitudAppPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 shrink-0">
-          <a
-            href={buildNewAppRequestMailto()}
+          <Link
+            href="/solicitar-acceso?nueva=1"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white shadow-sm transition-all"
           >
             <Mail className="w-4 h-4" />
-            Enviar a {PORTAL_ADMIN_EMAIL}
-          </a>
+            Abrir formulario
+          </Link>
           <button
             type="button"
             onClick={handleCopy}

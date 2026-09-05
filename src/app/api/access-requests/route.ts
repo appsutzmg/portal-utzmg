@@ -8,6 +8,7 @@ import {
   buildAppAccessRequestMessage,
   buildGeneralAccessRequestMessage,
   buildNewAppRequestMessage,
+  type NewAppRequestForm,
 } from '@/lib/access-request-messages';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,7 @@ interface AccessRequestBody {
   appCode?: string;
   appName?: string;
   comment?: string;
+  newApp?: NewAppRequestForm;
 }
 
 export async function POST(request: NextRequest) {
@@ -41,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = (await request.json()) as AccessRequestBody;
-    const { type, appCode, appName, comment } = body;
+    const { type, appCode, appName, comment, newApp } = body;
 
     if (!type || !['app_access', 'general_access', 'new_app'].includes(type)) {
       return NextResponse.json(
@@ -99,8 +101,31 @@ export async function POST(request: NextRequest) {
       });
       targetResource = `access:${name}`;
     } else {
-      message = buildNewAppRequestMessage();
-      targetResource = 'new_app_request';
+      if (
+        !newApp?.appName?.trim() ||
+        !newApp?.appUrl?.trim() ||
+        !newApp?.description?.trim() ||
+        !newApp?.category?.trim() ||
+        !newApp?.visibility?.trim() ||
+        !newApp?.authType?.trim() ||
+        !newApp?.responsible?.trim()
+      ) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message:
+              'Completa los campos obligatorios del formulario (nombre, URL, descripción, categoría, visibilidad, tipo de acceso y responsable).',
+          },
+          { status: 400 }
+        );
+      }
+
+      message = buildNewAppRequestMessage({
+        ...newApp,
+        userName: user.name,
+        userEmail: user.email,
+      });
+      targetResource = `new_app:${newApp.appName.trim()}`;
     }
 
     await sendInstitutionalEmail({
@@ -118,7 +143,7 @@ export async function POST(request: NextRequest) {
       details: {
         type,
         appCode: appCode || null,
-        appName: appName || null,
+        appName: appName || newApp?.appName || null,
         adminEmail: PORTAL_ADMIN_EMAIL,
       },
       ipAddress: request.headers.get('x-forwarded-for') || '127.0.0.1',

@@ -1,4 +1,4 @@
-export { NEW_APP_REQUEST_BODY as APP_REQUEST_EMAIL_TEMPLATE } from './mailto-requests';
+export { NEW_APP_REQUEST_BODY as APP_REQUEST_EMAIL_TEMPLATE } from './access-request-messages';
 
 export const PORTAL_ROLES = [
   { code: 'admin', label: 'Administrador', note: 'Acceso total al portal y administración' },
