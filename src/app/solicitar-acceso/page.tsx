@@ -134,11 +134,15 @@ export default function SolicitarAccesoPage() {
     setSubmittingKey(key);
     setFeedback(null);
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 20000);
+
     try {
       const res = await fetch('/api/access-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
       const data = await res.json();
 
@@ -158,12 +162,16 @@ export default function SolicitarAccesoPage() {
           message: data.message || 'No se pudo enviar la solicitud.',
         });
       }
-    } catch {
+    } catch (err) {
+      const aborted = err instanceof DOMException && err.name === 'AbortError';
       setFeedback({
         type: 'error',
-        message: 'Error de conexión. Verifica tu red e inténtalo de nuevo.',
+        message: aborted
+          ? 'La solicitud tardó demasiado. Revisa si quedó pendiente en Administración o inténtalo de nuevo.'
+          : 'Error de conexión. Verifica tu red e inténtalo de nuevo.',
       });
     } finally {
+      window.clearTimeout(timeoutId);
       setSubmittingKey(null);
     }
   };
