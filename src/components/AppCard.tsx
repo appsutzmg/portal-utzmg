@@ -21,6 +21,10 @@ export interface ApplicationItem {
   status: string;
   isVisible: boolean;
   requiredRoles: string;
+  requestedByEmail?: string | null;
+  requestedByName?: string | null;
+  requestNotes?: string | null;
+  createdAt?: string;
 }
 
 interface AppCardProps {

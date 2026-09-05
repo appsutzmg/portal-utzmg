@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       const catalogApps = await prisma.application.findMany({
         where: {
           isVisible: true,
-          status: { not: 'INACTIVE' },
+          status: { notIn: ['INACTIVE', 'PENDING_PUBLISH'] },
         },
         orderBy: { orderIndex: 'asc' },
       });
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     const allApps = await prisma.application.findMany({
       where: {
         isVisible: true,
-        status: { not: 'INACTIVE' },
+        status: { notIn: ['INACTIVE', 'PENDING_PUBLISH'] },
         ...(category ? { category } : {}),
       },
       orderBy: { orderIndex: 'asc' },

@@ -23,6 +23,8 @@ import {
   Sparkles,
   ImagePlus,
   FileText,
+  Clock,
+  Send,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -233,7 +235,12 @@ export default function AdminAppsPage() {
       openIn: formOpenIn,
       orderIndex: Number(formOrderIndex),
       status: formStatus,
-      isVisible: formIsVisible,
+      isVisible:
+        formStatus === 'PENDING_PUBLISH'
+          ? false
+          : formStatus === 'ACTIVE'
+            ? formIsVisible
+            : formIsVisible,
       requiredRoles: allCommunityAccess ? '' : formRoles.join(','),
     };
 
@@ -281,6 +288,44 @@ export default function AdminAppsPage() {
     }
   };
 
+  const handlePublish = async (app: ApplicationItem) => {
+    if (
+      !confirm(
+        `¿Publicar "${app.name}" en el portal?\nQuedará visible para los usuarios según los roles configurados.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/applications/${app.id}/publish`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        fetchApps();
+      } else {
+        alert(data.message || 'Error al publicar');
+      }
+    } catch (err) {
+      console.error('Error publishing app:', err);
+      alert('Error de conexión al publicar');
+    }
+  };
+
+  const parseRequestNotes = (notes?: string | null) => {
+    if (!notes) return null;
+    try {
+      return JSON.parse(notes) as {
+        responsible?: string;
+        department?: string | null;
+        supportEmail?: string | null;
+        desiredDate?: string | null;
+        comment?: string | null;
+      };
+    } catch {
+      return null;
+    }
+  };
+
   const filteredApps = apps.filter((app) => {
     const q = search.toLowerCase().trim();
     if (!q) return true;
@@ -288,9 +333,14 @@ export default function AdminAppsPage() {
       app.name.toLowerCase().includes(q) ||
       app.code.toLowerCase().includes(q) ||
       app.category.toLowerCase().includes(q) ||
-      app.description.toLowerCase().includes(q)
+      app.description.toLowerCase().includes(q) ||
+      (app.requestedByEmail || '').toLowerCase().includes(q) ||
+      (app.requestedByName || '').toLowerCase().includes(q)
     );
   });
+
+  const pendingApps = filteredApps.filter((app) => app.status === 'PENDING_PUBLISH');
+  const catalogApps = filteredApps.filter((app) => app.status !== 'PENDING_PUBLISH');
 
   if (authLoading || !user?.isAdmin) {
     return null;
@@ -345,9 +395,91 @@ export default function AdminAppsPage() {
           />
         </div>
         <div className="text-xs text-gray-500 font-medium">
-          Total registradas: <span className="font-bold text-gray-900 dark:text-gray-100">{apps.length}</span>
+          Total: <span className="font-bold text-gray-900 dark:text-gray-100">{apps.length}</span>
+          {pendingApps.length > 0 && (
+            <>
+              {' · '}
+              Pendientes:{' '}
+              <span className="font-bold text-amber-700">{pendingApps.length}</span>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Pendientes de publicar */}
+      {!isLoading && pendingApps.length > 0 && (
+        <section className="mb-6 rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/20 overflow-hidden">
+          <div className="px-4 py-3 border-b border-amber-200/80 dark:border-amber-900/40 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-amber-700" />
+            <h2 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+              Pendientes de publicar ({pendingApps.length})
+            </h2>
+          </div>
+          <ul className="divide-y divide-amber-100 dark:divide-amber-900/40">
+            {pendingApps.map((app) => {
+              const notes = parseRequestNotes(app.requestNotes);
+              return (
+                <li
+                  key={app.id}
+                  className="p-4 flex flex-col lg:flex-row lg:items-center gap-4"
+                >
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <ApplicationIcon
+                      icon={app.icon}
+                      logoUrl={app.logoUrl}
+                      className="w-11 h-11 rounded-xl shrink-0"
+                      imgClassName="w-full h-full object-contain p-0.5"
+                      fallbackClassName="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 border border-amber-200"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-bold text-gray-900 dark:text-gray-100 truncate">{app.name}</p>
+                      <p className="text-xs text-gray-500 font-mono">{app.code}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                        {app.description}
+                      </p>
+                      <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-2">
+                        Solicitada por{' '}
+                        <span className="font-semibold">
+                          {app.requestedByName || 'Usuario'}
+                        </span>
+                        {app.requestedByEmail ? ` (${app.requestedByEmail})` : ''}
+                        {notes?.responsible ? ` · Responsable: ${notes.responsible}` : ''}
+                        {notes?.desiredDate ? ` · Fecha deseada: ${notes.desiredDate}` : ''}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => openEditModal(app)}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      Revisar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePublish(app)}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-utzmg-green hover:bg-utzmg-darkgreen text-white"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      Publicar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(app)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
+                      title="Rechazar / eliminar solicitud"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
 
       {/* Applications Table / Cards */}
       {isLoading ? (
@@ -369,7 +501,7 @@ export default function AdminAppsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredApps.map((app) => (
+                {catalogApps.map((app) => (
                   <tr key={app.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/80 transition-colors">
                     
                     {/* Order */}
@@ -430,6 +562,10 @@ export default function AdminAppsPage() {
                       ) : app.status === 'MAINTENANCE' ? (
                         <span className="px-2 py-0.5 text-xs font-medium bg-amber-50 text-amber-700 rounded-full border border-amber-200">
                           Mantenimiento
+                        </span>
+                      ) : app.status === 'PENDING_PUBLISH' ? (
+                        <span className="px-2 py-0.5 text-xs font-medium bg-amber-50 text-amber-800 rounded-full border border-amber-200">
+                          Pendiente
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 dark:text-gray-400 rounded-full">
@@ -735,6 +871,7 @@ export default function AdminAppsPage() {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-utzmg-green bg-white dark:bg-gray-900"
                   >
                     <option value="ACTIVE">Operativa (Activa)</option>
+                    <option value="PENDING_PUBLISH">Pendiente de publicar</option>
                     <option value="MAINTENANCE">En Mantenimiento</option>
                     <option value="INACTIVE">Inactiva (Oculta)</option>
                   </select>

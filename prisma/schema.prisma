@@ -61,9 +61,12 @@ model Application {
   authType      String   @default("GOOGLE_SESSION") // 'GOOGLE_SESSION', 'SSO_JWT_TOKEN', etc.
   openIn        String   @default("_blank") // '_blank', '_self'
   orderIndex    Int      @default(0)
-  status        String   @default("ACTIVE") // 'ACTIVE', 'MAINTENANCE', 'INACTIVE'
+  status        String   @default("ACTIVE") // 'ACTIVE', 'MAINTENANCE', 'INACTIVE', 'PENDING_PUBLISH'
   isVisible     Boolean  @default(true)
   requiredRoles String   @default("") // Comma-separated role names
+  requestedByEmail String?
+  requestedByName  String?
+  requestNotes     String? // JSON con datos extra de la solicitud
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

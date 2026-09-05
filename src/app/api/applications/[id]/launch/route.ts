@@ -32,6 +32,13 @@ export async function POST(
       );
     }
 
+    if (app.status === 'PENDING_PUBLISH' && !user.isAdmin) {
+      return NextResponse.json(
+        { ok: false, message: 'Esta aplicación aún no ha sido publicada.' },
+        { status: 403 }
+      );
+    }
+
     if (
       !canUserAccessApplication(user, { requiredRoles: app.requiredRoles })
     ) {
